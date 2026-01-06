@@ -1,5 +1,7 @@
 package model.entity;
 
+import model.type.Coordinate;
+import model.type.Orientation;
 import model.type.ShipType;
 
 public abstract class Ship {
