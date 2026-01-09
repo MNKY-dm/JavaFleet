@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
@@ -8,12 +9,21 @@ public class Board {
     private Cell[][] cells;
     private List<Ship> ships;
 
-    public Board(int sizeX, int sizeY, Cell[][] cells, List<Ship> ships) {
+    public Board(int sizeX, int sizeY) { // initialiser un plateau vide en fonction de sa hauteur et de sa largeur
         this.weight = sizeX;
         this.height = sizeY;
-        this.cells = cells;
-        this.ships = ships;
+
+        for (int x  = 0; x < sizeX; x++) {
+            for (int y  = 0; y < sizeY; y++) {
+                cells = new Cell[this.height][this.weight];
+                ships = new ArrayList<>();
+            }
+        }
     }
+
+
+
+    // Getters
 
     public int getHeight() {
         return height;
@@ -31,6 +41,8 @@ public class Board {
         return ships;
     }
 
+    // Setters
+
     public void setWeight(int weight) {
         this.weight = weight;
     }
@@ -39,11 +51,11 @@ public class Board {
         this.height = height;
     }
 
-    public void setCells() {
+    public void setCells(Cell[][] cells) {
         this.cells = cells;
     }
 
-    public void setShips() {
+    public void setShips(List<Ship> ships) {
         this.ships = ships;
     }
 }
