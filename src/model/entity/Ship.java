@@ -12,6 +12,10 @@ public abstract class Ship {
     protected Orientation orientation;
     protected Coordinate[] positions;
 
+    public void takeDamage(int damage) {
+        this.health -= damage;
+    }
+
     // Getters
 
     public int getHealth() {

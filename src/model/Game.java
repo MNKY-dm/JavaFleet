@@ -1,6 +1,7 @@
 package model;
 
 import model.entity.Player;
+import model.type.GameState;
 
 public class Game {
     private Player[] players;
