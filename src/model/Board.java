@@ -21,24 +21,33 @@ public class Board {
         }
     }
 
+    private boolean isValidCoordinates(int x, int y) {
+        return x >= 0 && x < this.weight && y >= 0 && y < this.height;
+    }
 
+    public Cell getCell(int x, int y) {
+        if (isValidCoordinates(x, y)) {
+            return cells[x][y];
+        }
+        return null;
+    }
 
     // Getters
 
     public int getHeight() {
-        return height;
+        return this.height;
     }
 
     public int getWeight() {
-        return weight;
+        return this.weight;
     }
 
     public Cell[][] getCells() {
-        return cells;
+        return this.cells;
     }
 
     public List<Ship> getShips() {
-        return ships;
+        return this.ships;
     }
 
     // Setters
