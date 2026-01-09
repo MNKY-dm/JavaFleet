@@ -1,5 +1,7 @@
 package model;
 
+import model.type.AttackResult;
+
 public class Cell {
     private int x;
     private int y;
@@ -15,25 +17,52 @@ public class Cell {
         this.isHit = false;
     }
 
+    public boolean isOccupied() {
+        return this.ship != null;
+    }
+
+    public model.type.AttackResult receiveAttack () {
+        if (this.hasBeenAttacked) {
+            return null;
+        }
+
+        this.hasBeenAttacked = true;
+
+        if (ship != null) { // Si le tir touche un bateau
+            this.ship.takeDamage(1);
+            this.isHit = true;
+
+            if (this.ship.isSunk()) {
+                return AttackResult.SUNK; // Le bâteau coule
+            }
+            return AttackResult.HIT;
+        }
+        return AttackResult.MISS; // "Plouf"
+    }
+
+    // Getters
+
     public int getX() {
-        return x;
+        return this.x;
     }
 
     public int getY() {
-        return y;
+        return this.y;
     }
 
     public Ship getShip() {
-        return ship;
+        return this.ship;
     }
 
-    public boolean isHasBeenAttacked() {
-        return hasBeenAttacked;
+    public boolean hasBeenAttacked() {
+        return this.hasBeenAttacked;
     }
 
-    public boolean getIsHit() {
-        return isHit;
+    public boolean isHit() {
+        return this.isHit;
     }
+
+    // Setters
 
     public void setX(int x) {
         this.x = x;
