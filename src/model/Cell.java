@@ -1,7 +1,5 @@
 package model;
 
-import model.entity.Ship;
-
 public class Cell {
     private int x;
     private int y;

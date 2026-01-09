@@ -1,19 +1,30 @@
-package model.entity;
+package model;
 
 import model.type.Coordinate;
 import model.type.Orientation;
-import model.type.ShipType;
 
 public abstract class Ship {
     protected int health;
     protected int maxHealth;
-    protected ShipType shipType;
+    protected String shipType;
     protected int length;
     protected Orientation orientation;
     protected Coordinate[] positions;
 
+    public Ship(int length, String shipType) {
+        this.length = length;
+        this.maxHealth = length;
+        this.health = length;
+        this.shipType = shipType;
+        this.positions = new Coordinate[length];
+    }
+
     public void takeDamage(int damage) {
         this.health -= damage;
+    }
+
+    public boolean isSunk() {
+        return health <= 0;
     }
 
     // Getters

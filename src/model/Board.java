@@ -1,7 +1,5 @@
 package model;
 
-import model.entity.Ship;
-
 import java.util.List;
 
 public class Board {
