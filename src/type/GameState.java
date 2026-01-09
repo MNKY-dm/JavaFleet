@@ -1,7 +1,7 @@
-package model.type;
+package type;
 
 public enum GameState {
     SETUP,
     PLAYING,
-    FINISHED;
+    FINISHED
 }

@@ -1,6 +1,6 @@
 package model;
 
-import model.type.AttackResult;
+import type.AttackResult;
 
 public class Cell {
     private int x;
@@ -21,7 +21,7 @@ public class Cell {
         return this.ship != null;
     }
 
-    public model.type.AttackResult receiveAttack () {
+    public type.AttackResult receiveAttack () {
         if (this.hasBeenAttacked) {
             return null;
         }

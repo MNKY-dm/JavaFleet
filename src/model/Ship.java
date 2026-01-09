@@ -1,7 +1,7 @@
 package model;
 
-import model.type.Coordinate;
-import model.type.Orientation;
+import type.Coordinate;
+import type.Orientation;
 
 public abstract class Ship {
     protected int health;

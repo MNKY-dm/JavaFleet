@@ -1,6 +1,6 @@
-package model.type;
+package type;
 
 public enum Orientation {
     HORIZONTAL,
-    VERTICAL;
+    VERTICAL
 }

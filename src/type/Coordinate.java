@@ -1,4 +1,4 @@
-package model.type;
+package type;
 
 public final class Coordinate {
     private final int x;

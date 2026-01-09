@@ -1,7 +1,7 @@
-package model.type;
+package type;
 
 public enum AttackResult {
     HIT,
     MISS,
-    SUNK;
+    SUNK
 }

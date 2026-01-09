@@ -1,7 +1,7 @@
 package model;
 
-import model.type.Coordinate;
-import model.type.Orientation;
+import type.Coordinate;
+import type.Orientation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +36,7 @@ public class Board {
     }
 
     public boolean placeShip(Ship ship, int x, int y, Orientation orientation) {
+
         if (orientation == Orientation.HORIZONTAL) {
             if (x + ship.getLength() > this.weight) {
                 return false;
@@ -47,6 +48,24 @@ public class Board {
         }
 
         Coordinate[] positions = new Coordinate[ship.getLength()];
+        for (int i = 0; i < ship.getLength(); i++) {
+            int px = (orientation == Orientation.HORIZONTAL) ? x + i : x;
+            int py = (orientation == Orientation.VERTICAL) ? y + i : y;
+
+            if (cells[px][py].isOccupied()) {
+                return false;  // Chevauchement détecté
+            }
+            positions[i] = new Coordinate(px, py);
+        }
+
+        ship.setPositions(positions, orientation);
+
+        for (Coordinate p : positions) {
+            cells[p.getX()][p.getY()].setShip(ship);
+        }
+        ships.add(ship);
+
+        return true;
     }
 
     // Getters
