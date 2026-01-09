@@ -37,7 +37,7 @@ public abstract class Ship {
         return this.maxHealth;
     }
 
-    public ShipType getShipType() {
+    public String getShipType() {
         return this.shipType;
     }
 
@@ -63,7 +63,7 @@ public abstract class Ship {
         this.maxHealth = maxHealth;
     }
 
-    public void setShipType(ShipType shipType) {
+    public void setShipType(String shipType) {
         this.shipType = shipType;
     }
 
@@ -75,7 +75,8 @@ public abstract class Ship {
         this.orientation = orientation;
     }
 
-    public void setPositions(Coordinate[] positions) {
-        this.positions = positions;
+    public void setPositions(Coordinate[] coords, Orientation orientation) {
+        this.positions = coords;
+        this.orientation = orientation;
     }
 }

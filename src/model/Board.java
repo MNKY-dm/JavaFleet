@@ -1,5 +1,8 @@
 package model;
 
+import model.type.Coordinate;
+import model.type.Orientation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +33,20 @@ public class Board {
             return cells[x][y];
         }
         return null;
+    }
+
+    public boolean placeShip(Ship ship, int x, int y, Orientation orientation) {
+        if (orientation == Orientation.HORIZONTAL) {
+            if (x + ship.getLength() > this.weight) {
+                return false;
+            }
+        } else {
+            if (y + ship.getLength() > this.height) {
+                return false;
+            }
+        }
+
+        Coordinate[] positions = new Coordinate[ship.getLength()];
     }
 
     // Getters
