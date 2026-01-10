@@ -17,6 +17,7 @@ public class Player {
         this.name = name;
 
         // Ajout des bateaux par défaut à la liste this.ships
+        // À adapter en fonction
         this.ships.add(new Cruiser());
         this.ships.add(new BattleShip());
         this.ships.add(new BattleShip());
