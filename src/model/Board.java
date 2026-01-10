@@ -35,31 +35,38 @@ public class Board {
         return null;
     }
 
-    public boolean placeShip(Ship ship, int x, int y, Orientation orientation) {
+    public boolean placeShip(Ship ship, int x, int y, Orientation orientation) { // Fonction qui permet de placer un bateau sur le plateau
 
+        // Vérifier si le bateau ne dépasse pas le bord droit du plateau (pas besoin de vérifier si ça dépasse du côté gauche car aucune valeur négative ne sera rentrée)
         if (orientation == Orientation.HORIZONTAL) {
             if (x + ship.getLength() > this.weight) {
                 return false;
             }
+        // Idem pour le côté inférieur
         } else {
             if (y + ship.getLength() > this.height) {
                 return false;
             }
         }
 
-        Coordinate[] positions = new Coordinate[ship.getLength()];
+        Coordinate[] positions = new Coordinate[ship.getLength()]; // crée un tableau vide dont le nombre de cases est égal à la taille du bateau
+
+        // Vérifier si le bateau ne superpose pas un autre bateau
         for (int i = 0; i < ship.getLength(); i++) {
             int px = (orientation == Orientation.HORIZONTAL) ? x + i : x;
             int py = (orientation == Orientation.VERTICAL) ? y + i : y;
 
             if (cells[px][py].isOccupied()) {
-                return false;  // Chevauchement détecté
+                System.out.println("Chevauchement impossible");
+                return false;  // Autre bateau détecté
             }
             positions[i] = new Coordinate(px, py);
         }
 
+        // Si tout est ok, définir la position (coordonnées et orientation) du bateau
         ship.setPositions(positions, orientation);
 
+        // Placer le bateau dans chaque cellule qui composent la position du bateau
         for (Coordinate p : positions) {
             cells[p.getX()][p.getY()].setShip(ship);
         }
