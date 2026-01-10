@@ -93,6 +93,16 @@ public class Board {
         return cell.receiveAttack(); // Retourne un AttackResult selon le résultat de l'attaque sur cette case
     }
 
+    // Méthode qui permet de vérifier si tous les bateaux sont coulés
+    public boolean areAllShipsSunk() {
+        for (Ship ship : ships) {
+            if (!ship.isSunk()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Getters
 
     public int getHeight() {
