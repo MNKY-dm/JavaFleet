@@ -26,8 +26,11 @@ public class Game {
 
     private boolean areAllShipsReady() {
         for (Player player : this.players) {
-            if ()
+            if (!player.getMyBoard().areAllShipsSunk()) {
+                return false;
+            }
         }
+        return true;
     }
 
     // Getters
