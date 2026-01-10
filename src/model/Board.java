@@ -1,5 +1,6 @@
 package model;
 
+import type.AttackResult;
 import type.Coordinate;
 import type.Orientation;
 
@@ -37,7 +38,7 @@ public class Board {
 
     public boolean placeShip(Ship ship, int x, int y, Orientation orientation) { // Fonction qui permet de placer un bateau sur le plateau
 
-        // Vérifier si le bateau ne dépasse pas le bord droit du plateau (pas besoin de vérifier si ça dépasse du côté gauche car aucune valeur négative ne sera rentrée)
+        // Vérifier si le bateau ne dépasse pas le bord droit du plateau (pas besoin de vérifier si ça dépasse du côté gauche, car aucune valeur négative ne sera rentrée)
         if (orientation == Orientation.HORIZONTAL) {
             if (x + ship.getLength() > this.weight) {
                 return false;
@@ -66,13 +67,30 @@ public class Board {
         // Si tout est ok, définir la position (coordonnées et orientation) du bateau
         ship.setPositions(positions, orientation);
 
-        // Placer le bateau dans chaque cellule qui composent la position du bateau
+        // Placer le bateau dans chaque cellule qui compose la position du bateau
         for (Coordinate p : positions) {
             cells[p.getX()][p.getY()].setShip(ship);
         }
         ships.add(ship);
 
         return true;
+    }
+
+    // Méthode qui permet de tirer sur une case
+    public AttackResult shootAt(int x, int y) {
+
+        // Vérifier si la case visée est bien une case présente dans le plateau
+        if (!isValidCoordinates(x, y)) {
+            return null;
+        }
+
+        Cell cell = cells[x][y];
+        // Vérifier si la case visée a déjà été attaquée
+        if (cell.hasBeenAttacked()) {
+            return null;
+        }
+
+        return cell.receiveAttack(); // Retourne un AttackResult selon le résultat de l'attaque sur cette case
     }
 
     // Getters
