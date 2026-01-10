@@ -24,6 +24,16 @@ public class Game {
         this.currentPlayer = this.players[0]; // Le joueur 1 player1Name
     }
 
+    public void startGame() throws IllegalStateException {
+        if (areAllShipsReady()) {
+            this.gameState = GameState.PLAYING;
+            System.out.println("=== La partie commence ! ===");
+        }
+        else {
+            throw  new IllegalStateException(" Impossible de commencer le jeu car tous les bateaux ne sont pas placés. ");
+        }
+    }
+
     private boolean areAllShipsReady() {
         for (Player player : this.players) {
             if (!player.getMyBoard().areAllShipsSunk()) {
