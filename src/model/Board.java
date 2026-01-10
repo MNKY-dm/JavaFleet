@@ -79,6 +79,19 @@ public class Board {
         this.ships.add(ship);
     }
 
+    public boolean areAllShipsPlaced() {
+        if (this.ships.isEmpty()) { // Vérifier si la liste des bateaux est vide
+            return false;
+        }
+
+        for (Ship ship : this.ships) { // Vérifier si tous les bateaux de la liste ont été placés dans placeShip
+            if (ship.positions == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Méthode qui permet de tirer sur une case
     public AttackResult shootAt(int x, int y) {
 

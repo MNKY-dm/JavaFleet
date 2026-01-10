@@ -24,6 +24,12 @@ public class Game {
         this.currentPlayer = this.players[0]; // Le joueur 1 player1Name
     }
 
+    private boolean areAllShipsReady() {
+        for (Player player : this.players) {
+            if ()
+        }
+    }
+
     // Getters
 
     public Player[] getPlayers() {
