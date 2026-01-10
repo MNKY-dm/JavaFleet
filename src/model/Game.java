@@ -24,6 +24,8 @@ public class Game {
         this.currentPlayer = this.players[0]; // Le joueur 1 player1Name
     }
 
+    // Getters
+
     public Player[] getPlayers() {
         return players;
     }
@@ -38,5 +40,23 @@ public class Game {
 
     public int getTurn() {
         return turn;
+    }
+
+    // Setters
+
+    public void setPlayers(Player[] players) {
+        this.players = players;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
+    public void setTurn(int turn) {
+        this.turn = turn;
     }
 }
