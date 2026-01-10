@@ -22,13 +22,13 @@ public class Player {
     public void initializeShips() {
         // Ajout des bateaux par défaut à la liste this.ships
         // À adapter en fonction
-        this.myBoard.ships.add(new Cruiser());
-        this.myBoard.ships.add(new BattleShip());
-        this.myBoard.ships.add(new BattleShip());
-        this.myBoard.ships.add(new Destroyer());
-        this.myBoard.ships.add(new Destroyer());
-        this.myBoard.ships.add(new Destroyer()); // Total de 16 points de vie par défaut
-        this.myBoard.ships.add(new NavalMine()); // Sera évitée lors du compte des points de vie
+        this.myBoard.addShip(new Cruiser());
+        this.myBoard.addShip(new BattleShip());
+        this.myBoard.addShip(new BattleShip());
+        this.myBoard.addShip(new Destroyer());
+        this.myBoard.addShip(new Destroyer());
+        this.myBoard.addShip(new Destroyer()); // Total de 16 points de vie par défaut
+        this.myBoard.addShip(new NavalMine()); // Sera évitée lors du compte des points de vie
     }
 
     public boolean placeShip(Ship ship, int x, int y, Orientation orientation) {
