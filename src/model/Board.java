@@ -10,14 +10,14 @@ public class Board {
     private int weight;
     private int height;
     private Cell[][] cells;
-    private ArrayList<Ship> ships;
+    public ArrayList<Ship> ships;
 
-    public Board(int sizeX, int sizeY) { // initialiser un plateau vide en fonction de sa hauteur et de sa largeur
-        this.weight = sizeX;
-        this.height = sizeY;
+    public Board() { // initialiser un plateau vide en fonction de sa hauteur et de sa largeur
+        this.weight = 10;
+        this.height = 10;
 
-        for (int x  = 0; x < sizeX; x++) {
-            for (int y  = 0; y < sizeY; y++) {
+        for (int x  = 0; x < weight; x++) {
+            for (int y  = 0; y < height; y++) {
                 cells = new Cell[this.height][this.weight];
                 ships = new ArrayList<>();
             }
@@ -73,6 +73,10 @@ public class Board {
         ships.add(ship);
 
         return true;
+    }
+
+    public void addShip(Ship ship) {
+        this.ships.add(ship);
     }
 
     // Méthode qui permet de tirer sur une case

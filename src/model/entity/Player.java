@@ -11,20 +11,24 @@ public class Player {
     private String name;
     private Board myBoard;
     private Board opponentBoard;
-    private ArrayList<Ship> ships;
 
     public Player(String name) {
         this.name = name;
+        this.myBoard = new Board();
+        this.opponentBoard = null;
+        initializeShips();
+    }
 
+    public void initializeShips() {
         // Ajout des bateaux par défaut à la liste this.ships
         // À adapter en fonction
-        this.ships.add(new Cruiser());
-        this.ships.add(new BattleShip());
-        this.ships.add(new BattleShip());
-        this.ships.add(new Destroyer());
-        this.ships.add(new Destroyer());
-        this.ships.add(new Destroyer()); // Total de 16 points de vie par défaut
-        this.ships.add(new NavalMine()); // Sera évitée lors du compte des points de vie
+        this.myBoard.ships.add(new Cruiser());
+        this.myBoard.ships.add(new BattleShip());
+        this.myBoard.ships.add(new BattleShip());
+        this.myBoard.ships.add(new Destroyer());
+        this.myBoard.ships.add(new Destroyer());
+        this.myBoard.ships.add(new Destroyer()); // Total de 16 points de vie par défaut
+        this.myBoard.ships.add(new NavalMine()); // Sera évitée lors du compte des points de vie
     }
 
     public boolean placeShip(Ship ship, int x, int y, Orientation orientation) {
@@ -41,7 +45,7 @@ public class Player {
 
     public int getFleetHealth() {
         int totalHealth = 0;
-        for (Ship ship : ships) {
+        for (Ship ship : this.getShips()) {
             totalHealth += ship.getHealth();
         }
         return totalHealth;
@@ -67,8 +71,7 @@ public class Player {
     }
 
     public ArrayList<Ship> getShips() {
-        ships = this.myBoard.getShips();
-        return ships;
+        return this.myBoard.getShips();
     }
 
     // Setters
@@ -77,8 +80,8 @@ public class Player {
         this.name = name;
     }
 
-    public void setMyBoard(int x, int y) {
-        this.myBoard = new Board(x, y);
+    public void setMyBoard() {
+        this.myBoard = new Board();
     }
 
     public void setOpponentBoard(Board opponentBoard) {
