@@ -33,6 +33,7 @@ public class Cell {
             this.isHit = true;
 
             if (this.ship.isSunk()) {
+                this.ship.onSunk(); // Déclencher onSunk() --> Si c'est une NavalMine, fait couler l'attaquant
                 return AttackResult.SUNK; // Le bâteau coule
             }
             return AttackResult.HIT;

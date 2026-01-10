@@ -5,13 +5,12 @@ import type.Coordinate;
 import type.Orientation;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Board {
     private int weight;
     private int height;
     private Cell[][] cells;
-    private List<Ship> ships;
+    private ArrayList<Ship> ships;
 
     public Board(int sizeX, int sizeY) { // initialiser un plateau vide en fonction de sa hauteur et de sa largeur
         this.weight = sizeX;
@@ -117,7 +116,7 @@ public class Board {
         return this.cells;
     }
 
-    public List<Ship> getShips() {
+    public ArrayList<Ship> getShips() {
         return this.ships;
     }
 
@@ -135,7 +134,7 @@ public class Board {
         this.cells = cells;
     }
 
-    public void setShips(List<Ship> ships) {
+    public void setShips(ArrayList<Ship> ships) {
         this.ships = ships;
     }
 }

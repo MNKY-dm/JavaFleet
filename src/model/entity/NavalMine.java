@@ -2,6 +2,7 @@ package model.entity;
 
 import model.Ship;
 
+// Plaçable par le joueur, mais n'ajoute pas de points de vie à sa flotte
 public class NavalMine extends Ship {
     private static final int LENGTH = 1;
 
@@ -11,5 +12,10 @@ public class NavalMine extends Ship {
 
     public void explodePlayer() {
 
+    }
+
+    @Override
+    public void onSunk() {
+        explodePlayer();
     }
 }

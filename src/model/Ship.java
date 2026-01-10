@@ -5,17 +5,14 @@ import type.Orientation;
 
 public abstract class Ship {
     protected int health;
-    protected int maxHealth;
     protected String shipType;
     protected int length;
     protected Orientation orientation;
     protected Coordinate[] positions;
 
-    public Ship(int length, String shipType) {
-        this.length = length;
-        this.maxHealth = length;
-        this.health = length;
+    protected Ship(int length, String shipType) {
         this.shipType = shipType;
+        this.health = length;
         this.positions = new Coordinate[length];
     }
 
@@ -27,14 +24,14 @@ public abstract class Ship {
         return health <= 0;
     }
 
+    public void onSunk() {
+
+    }
+
     // Getters
 
     public int getHealth() {
         return this.health;
-    }
-
-    public int getMaxHealth() {
-        return this.maxHealth;
     }
 
     public String getShipType() {
@@ -57,10 +54,6 @@ public abstract class Ship {
 
     public void setHealth(int health) {
         this.health = health;
-    }
-
-    public void setMaxHealth(int maxHealth) {
-        this.maxHealth = maxHealth;
     }
 
     public void setShipType(String shipType) {
