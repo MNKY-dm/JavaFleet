@@ -1,6 +1,8 @@
 package model;
 
 import model.entity.Player;
+import type.AttackResult;
+import type.Coordinate;
 import type.GameState;
 
 public class Game {
@@ -32,6 +34,23 @@ public class Game {
         else {
             throw  new IllegalStateException(" Impossible de commencer le jeu car tous les bateaux ne sont pas placés. ");
         }
+    }
+
+    public AttackResult attack(int x, int y) {
+        if (getGameState() != GameState.PLAYING) {
+            return null;
+        }
+        AttackResult attackResult = currentPlayer.attackOpponent(x, y);
+        if (attackResult == null) {
+            System.out.println("Attaque invalide ! ");
+            return null;
+        }
+        System.out.println("Tour d'" + currentPlayer.getName() + " Tir sur la case " + new Coordinate(x, y) + " ; Résultat : " + attackResult);
+        if (checkGameOver()) {
+            this.gameState = GameState.FINISHED;
+        }
+        nextTurn();
+        return attackResult;
     }
 
     private boolean areAllShipsReady() {
