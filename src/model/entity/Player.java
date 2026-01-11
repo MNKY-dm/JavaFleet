@@ -46,6 +46,9 @@ public class Player {
     public int getFleetHealth() {
         int totalHealth = 0;
         for (Ship ship : this.getShips()) {
+            if (ship.getShipType().equals("NavalMine")) {
+                continue;
+            }
             totalHealth += ship.getHealth();
         }
         return totalHealth;
