@@ -65,6 +65,15 @@ public class Game {
         System.out.println("Tour n°" + this.turn + " ! C'est au tour de " + this.currentPlayer.getName() + ". ");
     }
 
+    public boolean checkGameOver() {
+        for (Player player : this.players) {
+            if (player.hasLost()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean areAllShipsReady() {
         for (Player player : this.players) {
             if (!player.getMyBoard().areAllShipsSunk()) {
