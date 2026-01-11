@@ -36,7 +36,7 @@ public class Game {
         }
     }
 
-    public AttackResult attack(int x, int y) {
+    public AttackResult attack(int x, int y) throws Exception {
         if (getGameState() != GameState.PLAYING) {
             return null;
         }
@@ -51,6 +51,18 @@ public class Game {
         }
         nextTurn();
         return attackResult;
+    }
+
+    public void nextTurn() throws Exception {
+        this.turn++;
+        if (this.currentPlayer == this.players[0]) {
+            this.currentPlayer = this.players[1];
+        } else if (this.currentPlayer == this.players[1]) {
+            this.currentPlayer = this.players[0];
+        } else {
+            throw new Exception("Impossible de passer au tour suivant");
+        }
+        System.out.println("Tour n°" + this.turn + " ! C'est au tour de " + this.currentPlayer.getName() + ". ");
     }
 
     private boolean areAllShipsReady() {
