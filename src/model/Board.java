@@ -36,14 +36,13 @@ public class Board {
         return null;
     }
 
-    public boolean placeShip(Ship ship, int x, int y, Orientation orientation) { // Fonction qui permet de placer un bateau sur le plateau
-
+    public boolean canPlaceShip(Ship ship, int x, int y, Orientation orientation) {
         // Vérifier si le bateau ne dépasse pas le bord droit du plateau (pas besoin de vérifier si ça dépasse du côté gauche, car aucune valeur négative ne sera rentrée)
         if (orientation == Orientation.HORIZONTAL) {
             if (x + ship.getLength() > this.width) {
                 return false;
             }
-        // Idem pour le côté inférieur
+            // Idem pour le côté inférieur
         } else {
             if (y + ship.getLength() > this.height) {
                 return false;
@@ -64,16 +63,27 @@ public class Board {
             positions[i] = new Coordinate(px, py);
         }
 
-        // Si tout est ok, définir la position (coordonnées et orientation) du bateau
-        ship.setPositions(positions, orientation);
-
-        // Placer le bateau dans chaque cellule qui compose la position du bateau
-        for (Coordinate p : positions) {
-            cells[p.getX()][p.getY()].setShip(ship);
-        }
-        ships.add(ship);
-
         return true;
+    }
+
+    public boolean placeShip(Ship ship, int x, int y, Orientation orientation) {
+        if (canPlaceShip(ship, x, y, orientation)) {
+            // Recalculer les positions
+            Coordinate[] positions = new Coordinate[ship.getLength()];
+            for (int i = 0; i < ship.getLength(); i++) {
+                int px = (orientation == Orientation.HORIZONTAL) ? x + i : x;
+                int py = (orientation == Orientation.VERTICAL) ? y + i : y;
+                positions[i] = new Coordinate(px, py);
+            }
+
+            ship.setPositions(positions, orientation);
+            for (Coordinate p : positions) {
+                cells[p.getX()][p.getY()].setShip(ship);
+            }
+            ships.add(ship);
+            return true;
+        }
+        return false;
     }
 
     public void addShip(Ship ship) {

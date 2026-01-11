@@ -32,7 +32,7 @@ public class Game {
             System.out.println("=== La partie commence ! ===");
         }
         else {
-            throw  new IllegalStateException(" Impossible de commencer le jeu car tous les bateaux ne sont pas placés. ");
+            throw new IllegalStateException(" Impossible de commencer le jeu car tous les bateaux ne sont pas placés. ");
         }
     }
 
@@ -76,7 +76,7 @@ public class Game {
 
     private boolean areAllShipsReady() {
         for (Player player : this.players) {
-            if (!player.getMyBoard().areAllShipsSunk()) {
+            if (!player.getMyBoard().areAllShipsPlaced()) {
                 return false;
             }
         }
