@@ -7,25 +7,26 @@ import type.Orientation;
 import java.util.ArrayList;
 
 public class Board {
-    private int weight;
+    private int width;
     private int height;
     private Cell[][] cells;
     public ArrayList<Ship> ships;
 
     public Board() { // initialiser un plateau vide en fonction de sa hauteur et de sa largeur
-        this.weight = 10;
+        this.width = 10;
         this.height = 10;
+        cells = new Cell[width][height];
 
-        for (int x  = 0; x < weight; x++) {
+        for (int x  = 0; x < width; x++) {
             for (int y  = 0; y < height; y++) {
-                cells = new Cell[this.height][this.weight];
-                ships = new ArrayList<>();
+                cells[x][y] = new Cell(x, y);
             }
         }
+        ships = new ArrayList<>();
     }
 
     private boolean isValidCoordinates(int x, int y) {
-        return x >= 0 && x < this.weight && y >= 0 && y < this.height;
+        return x >= 0 && x < this.width && y >= 0 && y < this.height;
     }
 
     public Cell getCell(int x, int y) {
@@ -39,7 +40,7 @@ public class Board {
 
         // Vérifier si le bateau ne dépasse pas le bord droit du plateau (pas besoin de vérifier si ça dépasse du côté gauche, car aucune valeur négative ne sera rentrée)
         if (orientation == Orientation.HORIZONTAL) {
-            if (x + ship.getLength() > this.weight) {
+            if (x + ship.getLength() > this.width) {
                 return false;
             }
         // Idem pour le côté inférieur
@@ -125,8 +126,8 @@ public class Board {
         return this.height;
     }
 
-    public int getWeight() {
-        return this.weight;
+    public int getWidth() {
+        return this.width;
     }
 
     public Cell[][] getCells() {
@@ -139,8 +140,8 @@ public class Board {
 
     // Setters
 
-    public void setWeight(int weight) {
-        this.weight = weight;
+    public void setWidth(int width) {
+        this.width = width;
     }
 
     public void setHeight(int height) {
