@@ -49,32 +49,23 @@ public class Board {
             }
         }
 
-        Coordinate[] positions = new Coordinate[ship.getLength()]; // crée un tableau vide dont le nombre de cases est égal à la taille du bateau
+        Coordinate[] positions = calculatePositions(ship, x, y, orientation); // crée un tableau vide dont le nombre de cases est égal à la taille du bateau
 
         // Vérifier si le bateau ne superpose pas un autre bateau
         for (int i = 0; i < ship.getLength(); i++) {
-            int px = (orientation == Orientation.HORIZONTAL) ? x + i : x;
-            int py = (orientation == Orientation.VERTICAL) ? y + i : y;
 
-            if (cells[px][py].isOccupied()) {
+            if (cells[positions[i].getX()][positions[i].getY()].isOccupied()) {
                 System.out.println("Chevauchement impossible");
                 return false;  // Autre bateau détecté
             }
-            positions[i] = new Coordinate(px, py);
         }
-
         return true;
     }
 
     public boolean placeShip(Ship ship, int x, int y, Orientation orientation) {
         if (canPlaceShip(ship, x, y, orientation)) {
             // Recalculer les positions
-            Coordinate[] positions = new Coordinate[ship.getLength()];
-            for (int i = 0; i < ship.getLength(); i++) {
-                int px = (orientation == Orientation.HORIZONTAL) ? x + i : x;
-                int py = (orientation == Orientation.VERTICAL) ? y + i : y;
-                positions[i] = new Coordinate(px, py);
-            }
+            Coordinate[] positions = calculatePositions(ship, x, y, orientation);
 
             ship.setPositions(positions, orientation);
             for (Coordinate p : positions) {
@@ -84,6 +75,16 @@ public class Board {
             return true;
         }
         return false;
+    }
+
+    private Coordinate[] calculatePositions(Ship ship, int x, int y, Orientation orientation) {
+        Coordinate[] positions = new Coordinate[ship.getLength()];
+        for (int i = 0; i < ship.getLength(); i++) {
+            int px = (orientation == Orientation.HORIZONTAL) ? x + i : x;
+            int py = (orientation == Orientation.VERTICAL) ? y + i : y;
+            positions[i] = new Coordinate(px, py);
+        }
+        return positions;
     }
 
     public void addShip(Ship ship) {
