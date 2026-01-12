@@ -22,10 +22,11 @@ public class GameController implements Initializable {
     @FXML
     private GridPane opponentBoardGrid;
 
+    private Game game;
+
     public void initialize(URL location, ResourceBundle resources){
-        // Initialiser la partie
+        // Initialiser le controller de jeu
         System.out.println("Initialising GameController");
-        Game game = new Game("Player 1", "Player 2");
 
         // Récupérer le plateau de chaque joueur
         Board playerBoard = game.getPlayers()[0].getMyBoard();
@@ -60,5 +61,9 @@ public class GameController implements Initializable {
                 gridPane.add(cellButton, x, y); // Ajoute le bouton à la cellule
             }
         }
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }

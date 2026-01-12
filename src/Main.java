@@ -1,3 +1,4 @@
+import controller.GameManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,10 +8,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/game.fxml"));
-        Parent root = loader.load();
-
-        Scene scene = new Scene(root);
+        GameManager gameManager = GameManager.getInstance();
+        gameManager.initialize(primaryStage);
 
         primaryStage.setWidth(1000);
         primaryStage.setHeight(900);
