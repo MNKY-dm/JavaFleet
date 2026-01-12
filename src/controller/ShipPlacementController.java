@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert;
 import model.Board;
 import model.Cell;
 import model.Ship;
@@ -24,6 +25,9 @@ public class ShipPlacementController implements Initializable {
     private Orientation currentShipOrientation;
     private ArrayList<Coordinate> previewCoordinates;
     private ArrayList<Ship> ships;
+    private boolean previewIsValid;
+    @FXML
+    private GridPane grid;
 
     @FXML
     private GridPane myBoardGrid;
@@ -80,42 +84,54 @@ public class ShipPlacementController implements Initializable {
     private void setShipPlacementPreview(int x, int y) {
         Board board = currentPlayer.getMyBoard();
 //        System.out.println("Dans setShipPlacementPreview, currentPlayer = " + currentPlayer);
+        try {
 
-        if (previewCoordinates != null && !previewCoordinates.isEmpty()) { // Vérifie si des coordonées de preview existent
-            System.out.println("preview déjà remplie, suppression en cours...");
+            if (previewCoordinates != null && !previewCoordinates.isEmpty()) { // Vérifie si des coordonées de preview existent
+//                System.out.println("preview déjà remplie, suppression en cours...");
+                for (Coordinate coordinate : previewCoordinates) {
+                    if (board.isValidCoordinates(coordinate.getX(),  coordinate.getY())) {
+                        cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #87CEEB !important -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+                    }
+                }
+                previewCoordinates.clear(); // Vider la liste une fois que les couleurs ont été réintialisées
+//                System.out.println("preview : suppression effectué");
+
+            }
+            boolean isValid = board.canPlaceShip(currentShip, x, y, currentShipOrientation); // Vérifie si on peut placer le bateau sur ces coordonnées
+
+//        System.out.println("Avant calculatePositions:");
+//        System.out.println("  currentShip = " + currentShip);
+//        System.out.println("  currentShip.getLength() = " + (currentShip != null ? currentShip.getLength() : "null"));
+//        System.out.println("  x = " + x + ", y = " + y);
+//        System.out.println("  currentShipOrientation = " + currentShipOrientation);
+            Coordinate[] positions = board.calculatePositions(currentShip, x, y, currentShipOrientation);
+
+    //        System.out.println("Après calculatePositions:");
+    //        System.out.println("  positions.length = " + positions.length);
+    //        for (int i = 0; i < positions.length; i++) {
+    //            System.out.println("  positions[" + i + "] = " + positions[i]);
+    //        }
+
+            previewCoordinates = new ArrayList<>(Arrays.asList(positions));
+
+//            System.out.println("preview inexistante, création en cours...");
+
+            boolean previewPlacable = true;
             for (Coordinate coordinate : previewCoordinates) {
-                cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #87CEEB !important;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+    //            System.out.println("coordonnée : " + coordinate.toString());
+                if (board.isValidCoordinates(coordinate.getX(), coordinate.getY())) { // Vérifier uniquement si les coordonnées sont dans la grille
+                    if (isValid) { // Si le placement est possible
+                        cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #016908 !important -fx-border-color: #000; -fx-border-width: 0.5;"); // Change la couleur de la case en vert
+                    } else { // S'il est impossible
+                        cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #BA0404 !important -fx-border-color: #000; -fx-border-width: 0.5;"); // Change la couleur de la case en rouge
+                        previewPlacable = false;
+                    }
+                }
             }
-            previewCoordinates.clear(); // Vider la liste une fois que les couleurs ont été réintialisées
-            System.out.println("preview : suppression effectué");
+            previewIsValid = previewPlacable;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Impossible d'afficher un preview car certaines coordonnées sont en dehors de la grille.");
 
-        }
-        boolean isValid = board.canPlaceShip(currentShip, x, y, currentShipOrientation); // Vérifie si on peut placer le bateau sur ces coordonnées
-
-        System.out.println("Avant calculatePositions:");
-        System.out.println("  currentShip = " + currentShip);
-        System.out.println("  currentShip.getLength() = " + (currentShip != null ? currentShip.getLength() : "null"));
-        System.out.println("  x = " + x + ", y = " + y);
-        System.out.println("  currentShipOrientation = " + currentShipOrientation);
-
-        Coordinate[] positions = board.calculatePositions(currentShip, x, y, currentShipOrientation);
-
-        System.out.println("Après calculatePositions:");
-        System.out.println("  positions.length = " + positions.length);
-        for (int i = 0; i < positions.length; i++) {
-            System.out.println("  positions[" + i + "] = " + positions[i]);
-        }
-
-        previewCoordinates = new ArrayList<>(Arrays.asList(positions));
-
-        System.out.println("preview inexistante, création en cours...");
-        for (Coordinate coordinate : previewCoordinates) {
-            System.out.println("coordonnée : " + coordinate.toString());
-            if (isValid) { // Si le placement est possible
-                cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #016908 !important;"); // Change la couleur de la case en vert
-            } else { // S'il est impossible
-                cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #BA0404 !important;"); // Change la couleur de la case en rouge
-            }
         }
     }
 
@@ -160,6 +176,15 @@ public class ShipPlacementController implements Initializable {
             setShipPlacementPreview(x, y);
         } else {
             System.out.println("Sélectionnez un bateau d'abord");
+        }
+    }
+
+    @FXML
+    private void okButtonClicked() {
+        Ship ship = currentShip;
+        System.out.println("Bouton OK cliqué");
+        if (previewCoordinates != null && !previewCoordinates.isEmpty()) {
+
         }
     }
 
