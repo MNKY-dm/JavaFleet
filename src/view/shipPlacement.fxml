@@ -61,7 +61,7 @@
          <children>
             <HBox prefHeight="100.0" prefWidth="500.0" spacing="100.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="rotateButton" mnemonicParsing="false" text="TOURNER" />
+                  <Button fx:id="rotateButton" mnemonicParsing="false" onAction="#rotateShip" text="TOURNER" />
                   <Button fx:id="okButton" mnemonicParsing="false" text="OK" textAlignment="CENTER" />
                </children>
                <HBox.margin>
