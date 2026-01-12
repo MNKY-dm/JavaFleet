@@ -11,6 +11,7 @@ import type.Orientation;
 import javafx.scene.control.Button;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ShipPlacementController implements Initializable {
@@ -33,7 +34,7 @@ public class ShipPlacementController implements Initializable {
 
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Initializing ShipPlacementController");
-        ships = currentPlayer.getShips();
+        ships = GameManager.getInstance().getGame().getCurrentPlayer().getShips();
 
         refreshShipsList();
     }
@@ -42,12 +43,18 @@ public class ShipPlacementController implements Initializable {
         System.out.println(" Nettoyage de la liste de bateaux. ");
         shipsVbox.getChildren().clear(); // Bien vider la liste des bateaux lorsque la liste doit être initialisée
         for (Ship ship : ships) {
-            if (ship.getPositions() == null) {
-                System.out.println("Bateau non placé : " + ship.getShipType());
+            System.out.println("Boucle sur la liste des bateaux");
+            System.out.println("Bateau : " + ship.getShipType());
+            System.out.println("Positions : " + Arrays.toString(ship.getPositions()));
+
+            if (ship.getPositions()[0] == null) {
+                System.out.println("Bateau non-placé : " + ship.getShipType());
                 Label shipLabel = new Label(ship.getShipType());
+                System.out.println(ship.getShipType());
                 this.shipsVbox.getChildren().add(shipLabel);
             }
         }
+        System.out.println("Tous les bateaux sont placés dans la VBox.");
     }
 
     // Getters

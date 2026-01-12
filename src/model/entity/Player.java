@@ -94,4 +94,9 @@ public class Player {
     public void setShips(ArrayList<Ship> ships) {
         this.myBoard.setShips(ships);
     }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

@@ -21,11 +21,13 @@ public class GameManager {
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
         Game game = new Game("PLAYER1", "PLAYER2");
+        setGame(game);
 
         try {
             loadScene(GameState.SETUP);
         } catch (IOException e) {
-            System.err.println("Erreur dans loadScene : " + e.getMessage());
+            System.err.println("Erreur dans loadScene : ");
+            e.printStackTrace();
         }
     }
 
@@ -48,6 +50,7 @@ public class GameManager {
         Object controllerObj = loader.getController();
         if (controllerObj instanceof ShipPlacementController controller) {
             controller.setCurrentPlayer(game.getCurrentPlayer());
+            System.out.println(game.getCurrentPlayer().toString());
         } else if (controllerObj instanceof GameController controller) {
             controller.setGame(game);
         }
@@ -69,5 +72,13 @@ public class GameManager {
             gameManager = new GameManager();
         }
         return gameManager;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }
