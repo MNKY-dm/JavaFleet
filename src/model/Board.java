@@ -77,7 +77,7 @@ public class Board {
         return false;
     }
 
-    private Coordinate[] calculatePositions(Ship ship, int x, int y, Orientation orientation) {
+    public Coordinate[] calculatePositions(Ship ship, int x, int y, Orientation orientation) {
         Coordinate[] positions = new Coordinate[ship.getLength()];
         for (int i = 0; i < ship.getLength(); i++) {
             int px = (orientation == Orientation.HORIZONTAL) ? x + i : x;

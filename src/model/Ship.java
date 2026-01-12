@@ -11,6 +11,7 @@ public abstract class Ship {
     protected Coordinate[] positions;
 
     protected Ship(int length, String shipType) {
+        this.length = length;
         this.shipType = shipType;
         this.health = length;
         this.positions = new Coordinate[length];

@@ -9,6 +9,7 @@ import model.Board;
 import model.Cell;
 import model.Ship;
 import model.entity.Player;
+import type.Coordinate;
 import type.Orientation;
 
 import javafx.scene.control.Button;
@@ -21,10 +22,11 @@ public class ShipPlacementController implements Initializable {
     private Player currentPlayer;
     private Ship currentShip;
     private Orientation currentShipOrientation;
+    private ArrayList<Coordinate> previewCoordinates;
     private ArrayList<Ship> ships;
 
     @FXML
-    private GridPane gridPane;
+    private GridPane myBoardGrid;
 
     @FXML
     private Button[][] cellsButtons = new Button[10][10];
@@ -46,12 +48,14 @@ public class ShipPlacementController implements Initializable {
 
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Initializing ShipPlacementController");
-        ships = GameManager.getInstance().getGame().getCurrentPlayer().getShips();
+        currentPlayer = GameManager.getInstance().getGame().getCurrentPlayer();
+        ships = currentPlayer.getShips();
 
         refreshShipsList();
-        initializeGridPane(gridPane, currentPlayer.getMyBoard());
+        initializeGridPane(myBoardGrid, currentPlayer.getMyBoard());
     }
 
+    @FXML
     private void initializeGridPane(GridPane gridPane, Board board) {
         System.out.println("Initializing shipPlacementGridPane");
         for (int y = 0 ; y < board.getHeight() ; y++) {
@@ -59,7 +63,7 @@ public class ShipPlacementController implements Initializable {
                 Cell cell = board.getCell(x, y);
 
                 Button cellButton = new Button(); // Crée un bouton
-                cellButton.setPrefSize(40, 40);
+                cellButton.setPrefSize(50, 50);
                 cellButton.setStyle("-fx-background-color: #87CEEB !important; " + "-fx-border-color: #000 !important; " + "-fx-border-width: 0.5 !important;");
 
                 cellButton.setOnAction(event -> {
@@ -68,6 +72,49 @@ public class ShipPlacementController implements Initializable {
                 });
                 cellsButtons[x][y] = cellButton;
                 gridPane.add(cellButton, x, y); // Ajoute le bouton à la cellule
+            }
+        }
+    }
+
+    // Méthode qui affiche une preview du bateau que l'on veut placer avant de confirmer
+    private void setShipPlacementPreview(int x, int y) {
+        Board board = currentPlayer.getMyBoard();
+//        System.out.println("Dans setShipPlacementPreview, currentPlayer = " + currentPlayer);
+
+        if (previewCoordinates != null && !previewCoordinates.isEmpty()) { // Vérifie si des coordonées de preview existent
+            System.out.println("preview déjà remplie, suppression en cours...");
+            for (Coordinate coordinate : previewCoordinates) {
+                cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #87CEEB !important;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+            }
+            previewCoordinates.clear(); // Vider la liste une fois que les couleurs ont été réintialisées
+            System.out.println("preview : suppression effectué");
+
+        }
+        boolean isValid = board.canPlaceShip(currentShip, x, y, currentShipOrientation); // Vérifie si on peut placer le bateau sur ces coordonnées
+
+        System.out.println("Avant calculatePositions:");
+        System.out.println("  currentShip = " + currentShip);
+        System.out.println("  currentShip.getLength() = " + (currentShip != null ? currentShip.getLength() : "null"));
+        System.out.println("  x = " + x + ", y = " + y);
+        System.out.println("  currentShipOrientation = " + currentShipOrientation);
+
+        Coordinate[] positions = board.calculatePositions(currentShip, x, y, currentShipOrientation);
+
+        System.out.println("Après calculatePositions:");
+        System.out.println("  positions.length = " + positions.length);
+        for (int i = 0; i < positions.length; i++) {
+            System.out.println("  positions[" + i + "] = " + positions[i]);
+        }
+
+        previewCoordinates = new ArrayList<>(Arrays.asList(positions));
+
+        System.out.println("preview inexistante, création en cours...");
+        for (Coordinate coordinate : previewCoordinates) {
+            System.out.println("coordonnée : " + coordinate.toString());
+            if (isValid) { // Si le placement est possible
+                cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #016908 !important;"); // Change la couleur de la case en vert
+            } else { // S'il est impossible
+                cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #BA0404 !important;"); // Change la couleur de la case en rouge
             }
         }
     }
