@@ -203,9 +203,14 @@ public class ShipPlacementController implements Initializable {
     }
 
     private void onGridCellClicked(int x, int y) {
+        currentCell = currentPlayer.getMyBoard().getCell(x, y);
         if (currentShip != null) {
             setShipPlacementPreview(x, y);
-            currentCell = currentPlayer.getMyBoard().getCell(x, y);
+        } else if (currentCell.isOccupied()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Type de bateau");
+            alert.setContentText("Ce bateau est un " + currentCell.getShip().getShipType());
+            alert.showAndWait();
         } else {
             System.out.println("Sélectionnez un bateau d'abord");
         }
@@ -221,6 +226,11 @@ public class ShipPlacementController implements Initializable {
             refreshShipsList(); // Rafraichir la liste des bateaux non placés
             currentShip = null; // Déselectionner le bateau
             updateGridPane();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Position invalide");
+            alert.setContentText("Le bateau dépasse les limites de la grille");
+            alert.showAndWait();
         }
     }
 
