@@ -55,7 +55,7 @@ public class Board {
         for (int i = 0; i < ship.getLength(); i++) {
 
             if (cells[positions[i].getX()][positions[i].getY()].isOccupied()) {
-                System.out.println("Chevauchement impossible");
+//                System.out.println("Chevauchement impossible");
                 return false;  // Autre bateau détecté
             }
         }

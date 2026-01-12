@@ -50,7 +50,7 @@ public class ShipPlacementController implements Initializable {
     private Label selectedShipLabel;
 
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("Initializing ShipPlacementController");
+//        System.out.println("Initializing ShipPlacementController");
         currentPlayer = GameManager.getInstance().getGame().getCurrentPlayer();
         ships = currentPlayer.getShips();
 
@@ -60,7 +60,7 @@ public class ShipPlacementController implements Initializable {
 
     @FXML
     private void initializeGridPane(GridPane gridPane, Board board) {
-        System.out.println("Initializing shipPlacementGridPane");
+//        System.out.println("Initializing shipPlacementGridPane");
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
                 Cell cell = board.getCell(x, y);
@@ -70,7 +70,7 @@ public class ShipPlacementController implements Initializable {
                 cellButton.setStyle("-fx-background-color: #87CEEB !important; " + "-fx-border-color: #000 !important; " + "-fx-border-width: 0.5 !important;");
 
                 cellButton.setOnAction(event -> {
-                    System.out.println("Cellule cliquée : (" + cell.getX() + ", " + cell.getY() + ")");
+//                    System.out.println("Cellule cliquée : (" + cell.getX() + ", " + cell.getY() + ")");
                     onGridCellClicked(cell.getX(), cell.getY());
                 });
                 cellsButtons[x][y] = cellButton;
@@ -89,7 +89,12 @@ public class ShipPlacementController implements Initializable {
 //                System.out.println("preview déjà remplie, suppression en cours...");
                 for (Coordinate coordinate : previewCoordinates) {
                     if (board.isValidCoordinates(coordinate.getX(),  coordinate.getY())) {
-                        cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+                        if (board.getCell(coordinate.getX(),  coordinate.getY()).isOccupied()) {
+//                            System.out.println("Case occupée, retour marron");
+                            cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+                        } else {
+                            cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+                        }
                     }
                 }
                 previewCoordinates.clear(); // Vider la liste une fois que les couleurs ont été réintialisées
@@ -135,17 +140,17 @@ public class ShipPlacementController implements Initializable {
     }
 
     public void refreshShipsList() {
-        System.out.println(" Nettoyage de la liste de bateaux. ");
+//        System.out.println(" Nettoyage de la liste de bateaux. ");
         shipsVbox.getChildren().clear(); // Bien vider la liste des bateaux lorsque la liste doit être initialisée
         for (Ship ship : ships) {
-            System.out.println("Boucle sur la liste des bateaux");
-            System.out.println("Bateau : " + ship.getShipType());
-            System.out.println("Positions : " + Arrays.toString(ship.getPositions()));
+//            System.out.println("Boucle sur la liste des bateaux");
+//            System.out.println("Bateau : " + ship.getShipType());
+//            System.out.println("Positions : " + Arrays.toString(ship.getPositions()));
 
             if (ship.getPositions()[0] == null) {
-                System.out.println("Bateau non-placé : " + ship.getShipType());
+//                System.out.println("Bateau non-placé : " + ship.getShipType());
                 Label shipLabel = new Label(ship.getShipType());
-                System.out.println(ship.getShipType());
+//                System.out.println(ship.getShipType());
                 shipLabel.setOnMouseClicked(event -> {
                     onShipLabelClicked(ship, shipLabel);
                 });
@@ -153,7 +158,7 @@ public class ShipPlacementController implements Initializable {
 
             }
         }
-        System.out.println("Tous les bateaux sont placés dans la VBox.");
+//        System.out.println("Tous les bateaux sont placés dans la VBox.");
     }
 
     @FXML
@@ -175,9 +180,9 @@ public class ShipPlacementController implements Initializable {
             for (int x = 0 ; x < board.getWidth() ; x++) {
                 Cell cell = board.getCell(x, y);
 
-                if (cell.isOccupied()) {
+                if (cell.isOccupied()) { // Si un bateau est placé
                     Button boatButton = cellsButtons[x][y]; // Utilise le bouton existant
-                    boatButton.setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000 !important; -fx-border-width: 0.5 !important;");
+                    boatButton.setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000 !important; -fx-border-width: 0.5 !important;"); // Le colore en gris/marron
                 }
             }
         }
@@ -189,7 +194,7 @@ public class ShipPlacementController implements Initializable {
             selectedShipLabel = shipLabel;
         } else {
             selectedShipLabel.setStyle("-fx-background-color: transparent;");
-            System.out.println("Réinitialisation du style du shipLabel sélectionné précédent");
+//            System.out.println("Réinitialisation du style du shipLabel sélectionné précédent");
             selectedShipLabel = shipLabel;
             shipLabel.setStyle("-fx-background-color: #CCCCCC; -fx-padding: 5;");
         }
@@ -212,8 +217,10 @@ public class ShipPlacementController implements Initializable {
         System.out.println("Bouton OK cliqué");
         if (previewIsValid) {
             System.out.println("Bateau placé : " + ship.getShipType());
-            currentPlayer.getMyBoard().placeShip(ship, currentCell.getX(), currentCell.getY(), currentShipOrientation);
-            refreshShipsList();
+            currentPlayer.getMyBoard().placeShip(ship, currentCell.getX(), currentCell.getY(), currentShipOrientation); // Placer le bateau
+            refreshShipsList(); // Rafraichir la liste des bateaux non placés
+            currentShip = null; // Déselectionner le bateau
+            updateGridPane();
         }
     }
 
