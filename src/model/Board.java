@@ -5,6 +5,7 @@ import type.Coordinate;
 import type.Orientation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Board {
     private int width;
@@ -97,7 +98,7 @@ public class Board {
         }
 
         for (Ship ship : this.ships) { // Vérifier si tous les bateaux de la liste ont été placés dans placeShip
-            if (ship.positions == null) {
+            if (ship.positions[0] == null) {
                 return false;
             }
         }

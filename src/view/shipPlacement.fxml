@@ -82,7 +82,7 @@
                   <Insets left="15.0" top="20.0" />
                </padding>
             </VBox>
-            <Button fx:id="confirmButton" mnemonicParsing="false" text="CONFIRMER" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" />
+            <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#confirmButtonClicked" text="CONFIRMER" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" />
          </children>
          <BorderPane.margin>
             <Insets />

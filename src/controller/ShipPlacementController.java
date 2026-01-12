@@ -2,6 +2,7 @@ package controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
@@ -17,6 +18,7 @@ import javafx.scene.control.Button;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ShipPlacementController implements Initializable {
@@ -240,6 +242,29 @@ public class ShipPlacementController implements Initializable {
             currentShipOrientation = Orientation.VERTICAL;
         } else {
             currentShipOrientation = Orientation.HORIZONTAL;
+        }
+    }
+
+    @FXML
+    private void confirmButtonClicked() {
+        System.out.println(currentPlayer.getMyBoard().areAllShipsPlaced());
+        if (!currentPlayer.getMyBoard().areAllShipsPlaced()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Placement des bateaux en attente");
+            alert.setContentText("Tous les bateaux n'ont pas été placés !");
+            alert.showAndWait();
+        } else  {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Passer à la suite ?");
+            alert.setContentText("Voulez-vous passer au tour suivant ?");
+            alert.showAndWait();
+
+            Optional<ButtonType> answer = alert.showAndWait();
+            if (answer.isPresent()) {
+                if (answer.get() == ButtonType.OK) {
+                    GameManager.getInstance().getGame().nextSetupTurn();
+                }
+            }
         }
     }
 
