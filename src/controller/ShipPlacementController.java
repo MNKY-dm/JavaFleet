@@ -247,7 +247,6 @@ public class ShipPlacementController implements Initializable {
 
     @FXML
     private void confirmButtonClicked() {
-        System.out.println(currentPlayer.getMyBoard().areAllShipsPlaced());
         if (!currentPlayer.getMyBoard().areAllShipsPlaced()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Placement des bateaux en attente");
@@ -257,12 +256,14 @@ public class ShipPlacementController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Passer à la suite ?");
             alert.setContentText("Voulez-vous passer au tour suivant ?");
-            alert.showAndWait();
 
             Optional<ButtonType> answer = alert.showAndWait();
             if (answer.isPresent()) {
                 if (answer.get() == ButtonType.OK) {
+                    System.out.println("Prochain setup turn.");
                     GameManager.getInstance().getGame().nextSetupTurn();
+                } else {
+                    System.out.println("Prochain setup turn annulé.");
                 }
             }
         }
