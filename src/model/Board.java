@@ -5,7 +5,6 @@ import type.Coordinate;
 import type.Orientation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Board {
     private int width;
@@ -63,7 +62,7 @@ public class Board {
         return true;
     }
 
-    public boolean placeShip(Ship ship, int x, int y, Orientation orientation) {
+    public void placeShip(Ship ship, int x, int y, Orientation orientation) {
         if (canPlaceShip(ship, x, y, orientation)) {
             // Recalculer les positions
             Coordinate[] positions = calculatePositions(ship, x, y, orientation);
@@ -73,9 +72,7 @@ public class Board {
                 cells[p.getX()][p.getY()].setShip(ship);
             }
             ships.add(ship);
-            return true;
         }
-        return false;
     }
 
     public Coordinate[] calculatePositions(Ship ship, int x, int y, Orientation orientation) {
@@ -86,10 +83,6 @@ public class Board {
             positions[i] = new Coordinate(px, py);
         }
         return positions;
-    }
-
-    public void addShip(Ship ship) {
-        this.ships.add(ship);
     }
 
     public boolean areAllShipsPlaced() {

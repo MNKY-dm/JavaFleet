@@ -65,6 +65,22 @@ public class Game {
         System.out.println("Tour n°" + this.turn + " ! C'est au tour de " + this.currentPlayer.getName() + ". ");
     }
 
+    public void nextSetupTurn() throws Exception {
+        if (this.currentPlayer == this.players[0]) {
+            this.currentPlayer = this.players[1];
+            System.out.println("C'est au tour du Joueur 2 de placer ses bateaux.");
+        } else if (this.currentPlayer == this.players[1]) {
+            try {
+                System.out.println("Vérifier si tous les bateaux sont placés, si oui, démarrage de la partie");
+                this.startGame();
+            } catch (IllegalStateException e) {
+                System.out.println("Impossible de passe au tour suivant");
+            }
+        } else {
+            throw new Exception("Impossible de passer au tour suivant");
+        }
+    }
+
     public boolean checkGameOver() {
         for (Player player : this.players) {
             if (player.hasLost()) {

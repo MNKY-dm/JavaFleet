@@ -11,28 +11,27 @@ public class Player {
     private String name;
     private Board myBoard;
     private Board opponentBoard;
+    private ArrayList<Ship> ships;
 
     public Player(String name) {
         this.name = name;
         this.myBoard = new Board();
         this.opponentBoard = null;
+        this.ships = new ArrayList<>();
         initializeShips();
     }
 
     public void initializeShips() {
         // Ajout des bateaux par défaut à la liste this.ships
         // À adapter en fonction
-        this.myBoard.addShip(new Cruiser());
-        this.myBoard.addShip(new BattleShip());
-        this.myBoard.addShip(new BattleShip());
-        this.myBoard.addShip(new Destroyer());
-        this.myBoard.addShip(new Destroyer());
-        this.myBoard.addShip(new Destroyer()); // Total de 16 points de vie par défaut
-        this.myBoard.addShip(new NavalMine()); // Sera évitée lors du compte des points de vie
-    }
-
-    public boolean placeShip(Ship ship, int x, int y, Orientation orientation) {
-        return this.myBoard.placeShip(ship, x, y, orientation);
+        this.ships.clear();
+        this.ships.add(new Cruiser());
+        this.ships.add(new BattleShip());
+        this.ships.add(new BattleShip());
+        this.ships.add(new Destroyer());
+        this.ships.add(new Destroyer());
+        this.ships.add(new Destroyer()); // Total de 16 points de vie par défaut
+        this.ships.add(new NavalMine()); // Sera évitée lors du compte des points de vie
     }
 
     public AttackResult attackOpponent(int x, int y) {
@@ -74,7 +73,7 @@ public class Player {
     }
 
     public ArrayList<Ship> getShips() {
-        return this.myBoard.getShips();
+        return this.ships;
     }
 
     // Setters

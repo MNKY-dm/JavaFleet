@@ -27,7 +27,6 @@ public class ShipPlacementController implements Initializable {
     private Cell currentCell;
     private Orientation currentShipOrientation;
     private ArrayList<Coordinate> previewCoordinates;
-    private ArrayList<Ship> ships;
     private boolean previewIsValid;
 
     @FXML
@@ -54,7 +53,6 @@ public class ShipPlacementController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 //        System.out.println("Initializing ShipPlacementController");
         currentPlayer = GameManager.getInstance().getGame().getCurrentPlayer();
-        ships = currentPlayer.getShips();
 
         refreshShipsList();
         initializeGridPane(myBoardGrid, currentPlayer.getMyBoard());
@@ -142,15 +140,17 @@ public class ShipPlacementController implements Initializable {
     }
 
     public void refreshShipsList() {
-//        System.out.println(" Nettoyage de la liste de bateaux. ");
+        System.out.println(" Nettoyage de la liste de bateaux. ");
+        System.out.println("refreshShipsList() pour : " + currentPlayer.getName());
+        System.out.println("VBox children avant clear : " + shipsVbox.getChildren().size());
         shipsVbox.getChildren().clear(); // Bien vider la liste des bateaux lorsque la liste doit être initialisée
-        for (Ship ship : ships) {
+        for (Ship ship : currentPlayer.getShips()) {
 //            System.out.println("Boucle sur la liste des bateaux");
 //            System.out.println("Bateau : " + ship.getShipType());
 //            System.out.println("Positions : " + Arrays.toString(ship.getPositions()));
 
             if (ship.getPositions()[0] == null) {
-//                System.out.println("Bateau non-placé : " + ship.getShipType());
+                System.out.println("Bateau non-placé : " + ship.getShipType());
                 Label shipLabel = new Label(ship.getShipType());
 //                System.out.println(ship.getShipType());
                 shipLabel.setOnMouseClicked(event -> {
@@ -261,7 +261,26 @@ public class ShipPlacementController implements Initializable {
             if (answer.isPresent()) {
                 if (answer.get() == ButtonType.OK) {
                     System.out.println("Prochain setup turn.");
-                    GameManager.getInstance().getGame().nextSetupTurn();
+                    try {
+                        GameManager.getInstance().getGame().nextSetupTurn();
+                        System.out.println("=== DEBUG ===");
+                        System.out.println("Nouveau currentPlayer : " + currentPlayer.getName());
+                        System.out.println("Ships du joueur : " + currentPlayer.getShips().size());
+                        System.out.println("Board du joueur : " + currentPlayer.getMyBoard());
+                        System.out.println("====================");
+                        currentPlayer = controller.GameManager.getInstance().getGame().getCurrentPlayer();
+                        System.out.println("=== DEBUG CONFIRM ===");
+                        System.out.println("Nouveau currentPlayer : " + currentPlayer.getName());
+                        System.out.println("Ships du joueur : " + currentPlayer.getShips().size());
+                        System.out.println("Board du joueur : " + currentPlayer.getMyBoard());
+                        System.out.println("====================");
+                        refreshShipsList();
+                        previewCoordinates.clear();
+                        initializeGridPane(myBoardGrid, currentPlayer.getMyBoard());
+
+                    } catch (Exception e) {
+                        System.err.println(e.getMessage());
+                    }
                 } else {
                     System.out.println("Prochain setup turn annulé.");
                 }
@@ -283,9 +302,6 @@ public class ShipPlacementController implements Initializable {
         return currentShipOrientation;
     }
 
-    public ArrayList<Ship> getShips() {
-        return ships;
-    }
 
     // Setters
 
@@ -299,9 +315,5 @@ public class ShipPlacementController implements Initializable {
 
     public void setCurrentShipOrientation(Orientation currentShipOrientation) {
         this.currentShipOrientation = currentShipOrientation;
-    }
-
-    public void setShips(ArrayList<Ship> ships) {
-        this.ships = ships;
     }
 }
