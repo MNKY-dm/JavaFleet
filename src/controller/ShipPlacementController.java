@@ -33,6 +33,9 @@ public class ShipPlacementController implements Initializable {
     private GridPane myBoardGrid;
 
     @FXML
+    private Label CurrentPlayer;
+
+    @FXML
     private Button[][] cellsButtons = new Button[10][10];
 
     @FXML
@@ -61,6 +64,7 @@ public class ShipPlacementController implements Initializable {
     @FXML
     private void initializeGridPane(GridPane gridPane, Board board) {
 //        System.out.println("Initializing shipPlacementGridPane");
+        CurrentPlayer.setText(GameManager.getInstance().getGame().getCurrentPlayer().getName());
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
                 Cell cell = board.getCell(x, y);
