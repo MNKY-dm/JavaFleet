@@ -11,7 +11,7 @@ public class Game {
     private GameState gameState;
     private int turn;
 
-    public  Game(String player1Name, String player2Name) {
+    public Game(String player1Name, String player2Name) {
         this.players = new Player[2];
         this.players[0] = new Player(player1Name);
         this.players[1] = new Player(player2Name);
@@ -23,12 +23,13 @@ public class Game {
 
         this.gameState = GameState.SETUP; // Le jeu est en phase de construction
         this.turn = 0; // Tour 0
-        this.currentPlayer = this.players[0]; // Le joueur 1 player1Name
+        this.currentPlayer = this.players[0]; // Le joueur 1
     }
 
     public void startGame() throws IllegalStateException {
         if (areAllShipsReady()) {
             this.gameState = GameState.PLAYING;
+            this.currentPlayer = this.players[0]; // Le joueur 1 commence la partie
             System.out.println("=== La partie commence ! ===");
         }
         else {
@@ -45,7 +46,7 @@ public class Game {
             System.out.println("Attaque invalide ! ");
             return null;
         }
-        System.out.println("Tour d'" + currentPlayer.getName() + " Tir sur la case " + new Coordinate(x, y) + " ; Résultat : " + attackResult);
+        System.out.println("Tour de " + currentPlayer.getName() + " ; \nTir sur la case  : " + new Coordinate(x, y) + " ;\nRésultat : " + attackResult);
         if (checkGameOver()) {
             this.gameState = GameState.FINISHED;
         }
@@ -65,7 +66,7 @@ public class Game {
         System.out.println("Tour n°" + this.turn + " ! C'est au tour de " + this.currentPlayer.getName() + ". ");
     }
 
-    public void nextSetupTurn() throws Exception {
+    public boolean nextSetupTurn() throws Exception {
         if (this.currentPlayer == this.players[0]) {
             this.currentPlayer = this.players[1];
             System.out.println("C'est au tour du Joueur 2 de placer ses bateaux.");
@@ -73,12 +74,14 @@ public class Game {
             try {
                 System.out.println("Vérifier si tous les bateaux sont placés, si oui, démarrage de la partie");
                 this.startGame();
+                return true;
             } catch (IllegalStateException e) {
                 System.out.println("Impossible de passe au tour suivant");
             }
         } else {
             throw new Exception("Impossible de passer au tour suivant");
         }
+        return false;
     }
 
     public boolean checkGameOver() {

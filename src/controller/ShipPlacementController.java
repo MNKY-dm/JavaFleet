@@ -12,6 +12,7 @@ import model.Cell;
 import model.Ship;
 import model.entity.Player;
 import type.Coordinate;
+import type.GameState;
 import type.Orientation;
 
 import javafx.scene.control.Button;
@@ -144,9 +145,9 @@ public class ShipPlacementController implements Initializable {
     }
 
     public void refreshShipsList() {
-        System.out.println(" Nettoyage de la liste de bateaux. ");
-        System.out.println("refreshShipsList() pour : " + currentPlayer.getName());
-        System.out.println("VBox children avant clear : " + shipsVbox.getChildren().size());
+//        System.out.println(" Nettoyage de la liste de bateaux. ");
+//        System.out.println("refreshShipsList() pour : " + currentPlayer.getName());
+//        System.out.println("VBox children avant clear : " + shipsVbox.getChildren().size());
         shipsVbox.getChildren().clear(); // Bien vider la liste des bateaux lorsque la liste doit être initialisée
         for (Ship ship : currentPlayer.getShips()) {
 //            System.out.println("Boucle sur la liste des bateaux");
@@ -154,7 +155,7 @@ public class ShipPlacementController implements Initializable {
 //            System.out.println("Positions : " + Arrays.toString(ship.getPositions()));
 
             if (ship.getPositions()[0] == null) {
-                System.out.println("Bateau non-placé : " + ship.getShipType());
+//                System.out.println("Bateau non-placé : " + ship.getShipType());
                 Label shipLabel = new Label(ship.getShipType());
 //                System.out.println(ship.getShipType());
                 shipLabel.setOnMouseClicked(event -> {
@@ -225,9 +226,9 @@ public class ShipPlacementController implements Initializable {
     @FXML
     private void okButtonClicked() {
         Ship ship = currentShip;
-        System.out.println("Bouton OK cliqué");
+//        System.out.println("Bouton OK cliqué");
         if (previewIsValid) {
-            System.out.println("Bateau placé : " + ship.getShipType());
+//            System.out.println("Bateau placé : " + ship.getShipType());
             currentPlayer.getMyBoard().placeShip(ship, currentCell.getX(), currentCell.getY(), currentShipOrientation); // Placer le bateau
             refreshShipsList(); // Rafraichir la liste des bateaux non placés
             currentShip = null; // Déselectionner le bateau
@@ -266,18 +267,10 @@ public class ShipPlacementController implements Initializable {
                 if (answer.get() == ButtonType.OK) {
                     System.out.println("Prochain setup turn.");
                     try {
-                        GameManager.getInstance().getGame().nextSetupTurn();
-                        System.out.println("=== DEBUG ===");
-                        System.out.println("Nouveau currentPlayer : " + currentPlayer.getName());
-                        System.out.println("Ships du joueur : " + currentPlayer.getShips().size());
-                        System.out.println("Board du joueur : " + currentPlayer.getMyBoard());
-                        System.out.println("====================");
+                        if (GameManager.getInstance().getGame().nextSetupTurn()) {
+                            GameManager.getInstance().loadScene(GameManager.getInstance().getGame().getGameState());
+                        }
                         currentPlayer = controller.GameManager.getInstance().getGame().getCurrentPlayer();
-                        System.out.println("=== DEBUG CONFIRM ===");
-                        System.out.println("Nouveau currentPlayer : " + currentPlayer.getName());
-                        System.out.println("Ships du joueur : " + currentPlayer.getShips().size());
-                        System.out.println("Board du joueur : " + currentPlayer.getMyBoard());
-                        System.out.println("====================");
                         refreshShipsList();
                         previewCoordinates.clear();
                         initializeGridPane(myBoardGrid, currentPlayer.getMyBoard());

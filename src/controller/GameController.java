@@ -1,69 +1,142 @@
 package controller;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Priority;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import model.Board;
 import model.Cell;
 import model.Game;
+import model.entity.Player;
+import type.Coordinate;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
-
 public class GameController implements Initializable {
+    private Player currentPlayer;
+    private Player opponentPlayer;
+    private Cell currentCell;
+    private Coordinate previewTarget;
 
     @FXML
-    private HBox centerHBox;  // Le HBox qui contient les 2 grilles
-    @FXML
-    private GridPane playerBoardGrid;
-    @FXML
-    private GridPane opponentBoardGrid;
+    private Label myNameLabel;
 
-    private Game game;
+    @FXML
+    private Label opponentNameLabel;
+
+    @FXML
+    private GridPane opponentBoard;
+
+    @FXML
+    private GridPane myBoard;
+
+    @FXML
+    private Button[][] cellsButtons = new Button[10][10];
+
+    @FXML
+    private Button okButton;
+
+    @FXML
+    private Button cancelButton;
+
+    @FXML
+    private Label myHealthLabel;
+
+    @FXML
+    private Label myNbShipsLabel;
+
+    @FXML
+    private Label oppsNbShipsLabel;
 
     public void initialize(URL location, ResourceBundle resources){
-        // Initialiser le controller de jeu
-        System.out.println("Initialising GameController");
+        System.out.println("Initializing GameController");
 
-        // Récupérer le plateau de chaque joueur
-        Board playerBoard = game.getPlayers()[0].getMyBoard();
-        Board opponentBoard = game.getPlayers()[1].getMyBoard();
+        currentPlayer = GameManager.getInstance().getGame().getCurrentPlayer();
 
-        // Créer des boutons dans les cellules de chaque plateau
-        initializeGridPane(playerBoardGrid, playerBoard);
-        initializeGridPane(opponentBoardGrid, opponentBoard);
+        System.out.println("Current Player: " + currentPlayer);
 
-        // Rendre les GridPane flexibles horizontalement
-        HBox.setHgrow(playerBoardGrid, Priority.ALWAYS);
-        HBox.setHgrow(opponentBoardGrid, Priority.ALWAYS);
-
-        // Rendre les grilles carrées
-        playerBoardGrid.prefWidthProperty().bind(playerBoardGrid.heightProperty());
-        opponentBoardGrid.prefWidthProperty().bind(opponentBoardGrid.heightProperty());
-
+        initializeMyGridPane(myBoard, currentPlayer.getMyBoard());
     }
 
-    private void initializeGridPane(GridPane gridPane, Board board) {
+    @FXML
+    private void initializeMyGridPane(GridPane gridPane, Board board) {
+        System.out.println("Initializing MyGridPane");
+        util.MadeUpFunctions.appendLabel(myNameLabel, currentPlayer.getName());
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
                 Cell cell = board.getCell(x, y);
 
                 Button cellButton = new Button(); // Crée un bouton
-                cellButton.setPrefSize(40, 40);
-                cellButton.setStyle("-fx-background-color: #87CEEB !important; " + "-fx-border-color: #000 !important; " + "-fx-border-width: 0.5 !important;");
+                cellButton.setPrefSize(50, 50);
+                if (cell.isOccupied()) { // Si un bateau est placé
+                    cellButton.setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000 !important; -fx-border-width: 0.5 !important;"); // Le colore en gris/marron
+                } else {
+                    cellButton.setStyle("-fx-background-color: #87CEEB !important; " + "-fx-border-color: #000 !important; " + "-fx-border-width: 0.5 !important;");
+                }
 
                 cellButton.setOnAction(event -> {
-                    System.out.println("Cellule cliquée : (" + cell.getX() + ", " + cell.getY() + ")");
+//                    System.out.println("Cellule cliquée : (" + cell.getX() + ", " + cell.getY() + ")");
+                    onGridCellClicked(cell.getX(), cell.getY());
                 });
+                cellsButtons[x][y] = cellButton;
                 gridPane.add(cellButton, x, y); // Ajoute le bouton à la cellule
             }
         }
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    @FXML
+    private void updateMyGridPane() {
+        Board board = currentPlayer.getMyBoard();
+
+        // Commencer par supprimer le preview courant
+        if (previewTarget != null) { // Vérifie si des coordonées de preview existent
+
+            if (board.isValidCoordinates(previewTarget.getX(),  previewTarget.getY())) {
+                cellsButtons[previewTarget.getX()][previewTarget.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+            }
+
+            previewTarget = null; // Vider la liste une fois que les couleurs ont été réintialisées
+        }
+
+        for (int y = 0 ; y < board.getHeight() ; y++) {
+            for (int x = 0 ; x < board.getWidth() ; x++) {
+                Cell cell = board.getCell(x, y);
+
+                if (cell.isOccupied()) { // Si un bateau est placé
+                    Button boatButton = cellsButtons[x][y]; // Utilise le bouton existant
+                    boatButton.setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000 !important; -fx-border-width: 0.5 !important;"); // Le colore en gris/marron
+                }
+            }
+        }
+    }
+
+    private void setCellPreview(Cell cell) {
+        cellsButtons[cell.getX()][cell.getY()].setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000; -fx-border-width: 0.5;");
+    }
+
+    private void onGridCellClicked(int x, int y) {
+        cellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;");
+        currentCell = currentPlayer.getMyBoard().getCell(x, y);
+        setCellPreview(currentCell);
+    }
+
+    @FXML
+    private void okButtonClicked() {
+
+    }
+
+    @FXML
+    private void cancelButtonClicked() {
+
+    }
+
+    public void setCurrentPlayer(Player player) {
+        this.currentPlayer = player;
     }
 }
