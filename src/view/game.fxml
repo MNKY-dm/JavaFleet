@@ -76,7 +76,7 @@
          <children>
             <HBox prefHeight="100.0" prefWidth="735.0" spacing="100.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="okButton" mnemonicParsing="false" onAction="#okButtonClicked" text="OK" textAlignment="CENTER" />
+                  <Button fx:id="okButton" mnemonicParsing="false" onAction="#okButtonClicked" text="TIRER" textAlignment="CENTER" />
                   <Button fx:id="cancelButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#cancelButtonClicked" text="CANCEL" textAlignment="CENTER" />
                   <Label fx:id="myHealthLabel" text="VIE RESTANTE : " />
                   <VBox>

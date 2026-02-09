@@ -53,7 +53,9 @@ public class GameManager {
             System.out.println(game.getCurrentPlayer().toString());
         } else if (controllerObj instanceof GameController controller) {
             controller.setCurrentPlayer(game.getPlayers()[0]);
+//            controller.setOpponentBoard(game.getPlayers()[1]);
             System.out.println("1 current player  : " + game.getCurrentPlayer());
+            System.out.println("2 opps player  : " + game.getPlayers()[1]);
         }
 
         Scene scene = new Scene(root);

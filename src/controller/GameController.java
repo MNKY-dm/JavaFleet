@@ -22,6 +22,7 @@ public class GameController implements Initializable {
     private Player currentPlayer;
     private Player opponentPlayer;
     private Cell currentCell;
+    private boolean targetIsValid;
 
     @FXML
     private Label myNameLabel;
@@ -37,6 +38,9 @@ public class GameController implements Initializable {
 
     @FXML
     private Button[][] cellsButtons = new Button[10][10];
+
+    @FXML
+    private Button[][] oppsCellsButtons = new Button[10][10];
 
     @FXML
     private Button okButton;
@@ -56,12 +60,15 @@ public class GameController implements Initializable {
     public void initialize(URL location, ResourceBundle resources){
         System.out.println("Initializing GameController");
 
-        currentPlayer = GameManager.getInstance().getGame().getCurrentPlayer();
+        setCurrentPlayer(GameManager.getInstance().getGame().getCurrentPlayer());
+        setOpponentPlayer(GameManager.getInstance().getGame().getPlayers()[1]);
 
         System.out.println("Current Player: " + currentPlayer);
+        System.out.println("Opps Player: " + opponentPlayer);
         System.out.println("myBoard children = " + myBoard.getChildren().size());
 
         initializeMyGridPane(myBoard, currentPlayer.getMyBoard());
+        initializeOppsGridPane(opponentBoard, opponentPlayer.getMyBoard());
     }
 
     @FXML
@@ -92,6 +99,31 @@ public class GameController implements Initializable {
     }
 
     @FXML
+    private void initializeOppsGridPane(GridPane gridPane, Board board) {
+        System.out.println("Initializing OppsGridPane");
+        util.MadeUpFunctions.appendLabel(opponentNameLabel, opponentPlayer.getName());
+        for (int y = 0 ; y < board.getHeight() ; y++) {
+            for (int x = 0 ; x < board.getWidth() ; x++) {
+                Cell cell = board.getCell(x, y);
+
+                Button cellButton = new Button(); // Crée un bouton
+                cellButton.setPrefSize(50, 50);
+
+                cellButton.setStyle("-fx-background-color: #87CEEB !important; " + "-fx-border-color: #000 !important; " + "-fx-border-width: 0.5 !important;");
+
+
+                cellButton.setOnAction(event -> {
+//                    System.out.println("Cellule cliquée : (" + cell.getX() + ", " + cell.getY() + ")");
+                    onOppsGridCellClicked(cell.getX(), cell.getY());
+                });
+                oppsCellsButtons[x][y] = cellButton;
+                gridPane.add(cellButton, x, y); // Ajoute le bouton à la cellule
+            }
+        }
+        System.out.println("oppsBoard children = " + opponentBoard.getChildren().size());
+    }
+
+    @FXML
     private void updateMyGridPane() {
         Board board = currentPlayer.getMyBoard();
 
@@ -114,18 +146,29 @@ public class GameController implements Initializable {
     }
 
     private void setCellPreview(Cell cell) {
-        if (currentCell != null) { // Vérifie si des coordonnées de preview existent (une cellule a déjà été cliquée avant celle-là)
-            if (currentCell.isOccupied()) {
-                cellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+        if (currentCell != null) {
+            if (currentCell.isHit()) {
+                oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #f03d3d !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+            } else if (currentCell.hasBeenAttacked()) {
+                oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #f0d23d !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
             } else {
-                cellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+                oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
             }
-
-            currentCell = null; // Réinitialiser la cellule courante une fois que les couleurs ont été réinitialisées
-
         }
         currentCell = cell;
-        cellsButtons[cell.getX()][cell.getY()].setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000; -fx-border-width: 0.5;");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Le joueur a sorti sa longue vue.");
+        if (currentCell.isHit()) {
+            oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #420000 !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+            alert.setContentText("Vous avez déjà touché un bateau ici.");
+        } else if (currentCell.hasBeenAttacked()) {
+            oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #615900 !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+            alert.setContentText("Vous avez déjà tiré dans l'eau ici.");
+        } else {
+            oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #2980b9 !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+            alert.setContentText("Le brouillard vous empêche de voir ici. Voulez vous tirer ici ? Si oui, cliquez sur TIRER.");
+        }
+        alert.showAndWait();
     }
 
     private void onMyGridCellClicked(int x, int y) {
@@ -159,6 +202,10 @@ public class GameController implements Initializable {
         alert.showAndWait();
     }
 
+    private void onOppsGridCellClicked(int x, int y) {
+        setCellPreview(opponentPlayer.getMyBoard().getCell(x, y));
+    }
+
     @FXML
     private void okButtonClicked() {
 
@@ -171,5 +218,9 @@ public class GameController implements Initializable {
 
     public void setCurrentPlayer(Player player) {
         this.currentPlayer = player;
+    }
+
+    public void setOpponentPlayer(Player player) {
+        this.opponentPlayer = player;
     }
 }
