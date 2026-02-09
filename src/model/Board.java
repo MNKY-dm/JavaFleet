@@ -69,7 +69,9 @@ public class Board {
 
             ship.setPositions(positions, orientation);
             for (Coordinate p : positions) {
+//                System.out.println("Ajout d'un bateau à la coordonnée : (" + p.getX() + "," + p.getY() + ")");
                 cells[p.getX()][p.getY()].setShip(ship);
+//                System.out.println(cells[p.getX()][p.getY()].toString());
             }
             ships.add(ship);
         }

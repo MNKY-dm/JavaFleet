@@ -22,7 +22,6 @@ public class GameController implements Initializable {
     private Player currentPlayer;
     private Player opponentPlayer;
     private Cell currentCell;
-    private Coordinate previewTarget;
 
     @FXML
     private Label myNameLabel;
@@ -60,6 +59,7 @@ public class GameController implements Initializable {
         currentPlayer = GameManager.getInstance().getGame().getCurrentPlayer();
 
         System.out.println("Current Player: " + currentPlayer);
+        System.out.println("myBoard children = " + myBoard.getChildren().size());
 
         initializeMyGridPane(myBoard, currentPlayer.getMyBoard());
     }
@@ -82,48 +82,81 @@ public class GameController implements Initializable {
 
                 cellButton.setOnAction(event -> {
 //                    System.out.println("Cellule cliquée : (" + cell.getX() + ", " + cell.getY() + ")");
-                    onGridCellClicked(cell.getX(), cell.getY());
+                    onMyGridCellClicked(cell.getX(), cell.getY());
                 });
                 cellsButtons[x][y] = cellButton;
                 gridPane.add(cellButton, x, y); // Ajoute le bouton à la cellule
             }
         }
+        System.out.println("myBoard children = " + myBoard.getChildren().size());
     }
 
     @FXML
     private void updateMyGridPane() {
         Board board = currentPlayer.getMyBoard();
 
-        // Commencer par supprimer le preview courant
-        if (previewTarget != null) { // Vérifie si des coordonées de preview existent
-
-            if (board.isValidCoordinates(previewTarget.getX(),  previewTarget.getY())) {
-                cellsButtons[previewTarget.getX()][previewTarget.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
-            }
-
-            previewTarget = null; // Vider la liste une fois que les couleurs ont été réintialisées
-        }
-
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
                 Cell cell = board.getCell(x, y);
 
-                if (cell.isOccupied()) { // Si un bateau est placé
-                    Button boatButton = cellsButtons[x][y]; // Utilise le bouton existant
+                Button boatButton = cellsButtons[x][y]; // Utilise le bouton existant
+                if (cell.isHit()) { // Si un bateau est placé
+                    boatButton.setStyle("-fx-background-color: #f03d3d !important; -fx-border-color: #000 !important; -fx-border-width: 0.5 !important;"); // Le colore en gris/marron
+                } else if (cell.hasBeenAttacked()) {
+                    boatButton.setStyle("-fx-background-color: #f0d23d !important; -fx-border-color: #000 !important; -fx-border-width: 0.5 !important;"); // Le colore en gris/marron
+                } else if (cell.isOccupied()) {
                     boatButton.setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000 !important; -fx-border-width: 0.5 !important;"); // Le colore en gris/marron
+                } else {
+                    boatButton.setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000 !important; -fx-border-width: 0.5 !important;"); // Le colore en gris/marron
                 }
             }
         }
     }
 
     private void setCellPreview(Cell cell) {
+        if (currentCell != null) { // Vérifie si des coordonnées de preview existent (une cellule a déjà été cliquée avant celle-là)
+            if (currentCell.isOccupied()) {
+                cellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+            } else {
+                cellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+            }
+
+            currentCell = null; // Réinitialiser la cellule courante une fois que les couleurs ont été réinitialisées
+
+        }
+        currentCell = cell;
         cellsButtons[cell.getX()][cell.getY()].setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000; -fx-border-width: 0.5;");
     }
 
-    private void onGridCellClicked(int x, int y) {
-        cellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;");
+    private void onMyGridCellClicked(int x, int y) {
         currentCell = currentPlayer.getMyBoard().getCell(x, y);
-        setCellPreview(currentCell);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        updateMyGridPane();
+        System.out.println("Clicked (" + x + "," + y + ")");
+        System.out.println("isOccupied = " + currentCell.isOccupied());
+        System.out.println("Style du bouton = " + cellsButtons[x][y].getStyle());
+        System.out.println("Joueur courant = " + currentPlayer.getName());
+//        System.out.println(currentCell.toString());
+        if (currentCell.isOccupied()) {
+            System.out.println("Type de bateau : " + currentCell.getShip().getShipType());
+            alert.setTitle("Type de bateau");
+            if (currentCell.getShip().isSunk()) {
+                alert.setContentText("Ce bateau était un " + currentCell.getShip().getShipType() + "\nIl est probablement mieux là où il est... R.I.P.");
+            } else if (currentCell.isHit()) {
+                alert.setContentText("Ce bateau est un " + currentCell.getShip().getShipType() + "\nCette partie du bateau n'est pas très en forme..." + "Il lui reste " + currentCell.getShip().getHealth() + " points de vie");
+            } else {
+                 alert.setContentText("Ce bateau est un " + currentCell.getShip().getShipType() + "\nTout va bien ici.");
+            }
+        }
+        else {
+            alert.setTitle("Le joueur a sorti sa longue vue.");
+            if (currentCell.hasBeenAttacked()) {
+                alert.setContentText("L'adversaire a l'air d'en avoir après l'eau : une explosion a eu lieu ici.");
+            } else {
+                alert.setContentText("L'eau est calme.");
+            }
+        }
+        alert.showAndWait();
     }
 
     @FXML

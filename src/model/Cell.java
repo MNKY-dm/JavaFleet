@@ -84,4 +84,10 @@ public class Cell {
     public void setIsHit(boolean isHit) {
         this.isHit = isHit;
     }
+
+    @Override
+    public String toString() {
+        return "Coordonnées : (" + this.getX() + "," + this.getY() + ")\n" +
+                "Bateau  : " + this.getShip();
+    }
 }
