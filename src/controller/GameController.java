@@ -145,6 +145,26 @@ public class GameController implements Initializable {
         }
     }
 
+    @FXML
+    private void updateOppsGridPane() {
+        Board board = opponentPlayer.getMyBoard();
+
+        for (int y = 0 ; y < board.getHeight() ; y++) {
+            for (int x = 0 ; x < board.getWidth() ; x++) {
+                Cell cell = board.getCell(x, y);
+
+                Button boatButton = oppsCellsButtons[x][y]; // Utilise le bouton existant
+                if (cell.isHit()) { // Si un bateau est placé
+                    boatButton.setStyle("-fx-background-color: #f03d3d !important; -fx-border-color: #000 !important; -fx-border-width: 0.5 !important;"); // Le colore en gris/marron
+                } else if (cell.hasBeenAttacked()) {
+                    boatButton.setStyle("-fx-background-color: #f0d23d !important; -fx-border-color: #000 !important; -fx-border-width: 0.5 !important;"); // Le colore en gris/marron
+                } else {
+                    boatButton.setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000 !important; -fx-border-width: 0.5 !important;"); // Le colore en gris/marron
+                }
+            }
+        }
+    }
+
     private void setCellPreview(Cell cell) {
         if (currentCell != null) {
             if (currentCell.isHit()) {
