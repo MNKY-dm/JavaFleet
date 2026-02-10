@@ -67,6 +67,8 @@ public class GameController implements Initializable {
         System.out.println("Opps Player: " + opponentPlayer);
         System.out.println("myBoard children = " + myBoard.getChildren().size());
 
+        updateCurrentPlayer();
+
         initializeMyGridPane(myBoard, currentPlayer.getMyBoard());
         initializeOppsGridPane(opponentBoard, opponentPlayer.getMyBoard());
     }
@@ -74,7 +76,7 @@ public class GameController implements Initializable {
     @FXML
     private void initializeMyGridPane(GridPane gridPane, Board board) {
         System.out.println("Initializing MyGridPane");
-        util.MadeUpFunctions.appendLabel(myNameLabel, currentPlayer.getName());
+        myNameLabel.setText(currentPlayer.getName());
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
                 Cell cell = board.getCell(x, y);
@@ -101,7 +103,7 @@ public class GameController implements Initializable {
     @FXML
     private void initializeOppsGridPane(GridPane gridPane, Board board) {
         System.out.println("Initializing OppsGridPane");
-        util.MadeUpFunctions.appendLabel(opponentNameLabel, opponentPlayer.getName());
+        opponentNameLabel.setText(opponentPlayer.getName());
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
                 Cell cell = board.getCell(x, y);
@@ -127,6 +129,8 @@ public class GameController implements Initializable {
     private void updateMyGridPane() {
         Board board = currentPlayer.getMyBoard();
 
+        myNameLabel.setText(currentPlayer.getName());
+
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
                 Cell cell = board.getCell(x, y);
@@ -148,6 +152,8 @@ public class GameController implements Initializable {
     @FXML
     private void updateOppsGridPane() {
         Board board = opponentPlayer.getMyBoard();
+
+        opponentNameLabel.setText(opponentPlayer.getName());
 
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
@@ -191,6 +197,21 @@ public class GameController implements Initializable {
         alert.showAndWait();
     }
 
+    private void updateCurrentPlayer() {
+        Game game = GameManager.getInstance().getGame();
+        Player gameCurrent = game.getCurrentPlayer();
+
+        // currentPlayer = joueur dont c'est le tour
+        this.currentPlayer = gameCurrent;
+
+        // opponentPlayer = l'autre
+        if (gameCurrent == game.getPlayers()[0]) {
+            this.opponentPlayer = game.getPlayers()[1];
+        } else {
+            this.opponentPlayer = game.getPlayers()[0];
+        }
+    }
+
     private void onMyGridCellClicked(int x, int y) {
         currentCell = currentPlayer.getMyBoard().getCell(x, y);
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -228,7 +249,15 @@ public class GameController implements Initializable {
 
     @FXML
     private void okButtonClicked() {
-
+        try {
+            if (GameManager.getInstance().getGame().attack(currentCell.getX(), currentCell.getY()) != null) {
+                updateCurrentPlayer();
+                updateMyGridPane();
+                updateOppsGridPane();
+            }
+        } catch (Exception e) {
+            System.err.println(" ! ! ! Erreur dans nextTurn ! ! ! : " + e.getMessage());
+        }
     }
 
     @FXML

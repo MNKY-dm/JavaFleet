@@ -1,5 +1,6 @@
 package model;
 
+import javafx.scene.control.Alert;
 import model.entity.Player;
 import type.AttackResult;
 import type.Coordinate;
@@ -16,14 +17,14 @@ public class Game {
         this.players[0] = new Player(player1Name);
         this.players[1] = new Player(player2Name);
 
-        // Initialiser la dualité des plateaux
-        this.players[0].setOpponentBoard(this.players[1].getMyBoard());
-        this.players[1].setOpponentBoard(this.players[0].getMyBoard());
-
-
         this.gameState = GameState.SETUP; // Le jeu est en phase de construction
         this.turn = 0; // Tour 0
         this.currentPlayer = this.players[0]; // Le joueur 1
+
+        this.currentPlayer.setOpponentBoard(currentPlayer.getMyBoard());
+        this.players[1].setOpponentBoard(this.players[1].getMyBoard());
+
+
     }
 
     public void startGame() throws IllegalStateException {
@@ -42,11 +43,14 @@ public class Game {
             return null;
         }
         AttackResult attackResult = currentPlayer.attackOpponent(x, y);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("ATTAQUE");
         if (attackResult == null) {
-            System.out.println("Attaque invalide ! ");
+            alert.setContentText("Attaque invalide ! ");
             return null;
         }
-        System.out.println("Tour de " + currentPlayer.getName() + " ; \nTir sur la case  : " + new Coordinate(x, y) + " ;\nRésultat : " + attackResult);
+        alert.setContentText("Tour de " + currentPlayer.getName() + " ; \nTir sur la case  : " + new Coordinate(x, y) + " ;\nRésultat : " + attackResult);
+        alert.showAndWait();
         if (checkGameOver()) {
             this.gameState = GameState.FINISHED;
         }

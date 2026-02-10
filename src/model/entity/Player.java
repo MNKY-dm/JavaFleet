@@ -1,5 +1,6 @@
 package model.entity;
 
+import controller.GameManager;
 import model.Board;
 import model.Ship;
 import type.AttackResult;
@@ -88,7 +89,7 @@ public class Player {
 
     public void setOpponentBoard(Board opponentBoard) {
         // Récupérer le bateau adverse
-        // this.opponentBoard = opponentBoard;
+        this.opponentBoard = opponentBoard;
     }
 
     public void setShips(ArrayList<Ship> ships) {

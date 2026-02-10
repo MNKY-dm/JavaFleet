@@ -99,16 +99,26 @@
    <left>
       <VBox prefHeight="200.0" spacing="400.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="opponentNameLabel" text="PLATEAU DE : ">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <Label fx:id="myNameLabel" layoutX="10.0" layoutY="10.0" text="PLATEAU DE : ">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
+            <HBox>
+               <children>
+                  <Label text="PLATEAU DE : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="opponentNameLabel" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label text="PLATEAU DE : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="myNameLabel" />
+               </children>
+            </HBox>
          </children>
          <BorderPane.margin>
             <Insets />
