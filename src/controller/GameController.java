@@ -10,12 +10,8 @@ import model.Board;
 import model.Cell;
 import model.Game;
 import model.entity.Player;
-import type.Coordinate;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class GameController implements Initializable {
@@ -76,6 +72,7 @@ public class GameController implements Initializable {
     @FXML
     private void initializeMyGridPane(GridPane gridPane, Board board) {
         System.out.println("Initializing MyGridPane");
+        System.out.println("My Board: " + board);
         myNameLabel.setText(currentPlayer.getName());
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
@@ -103,6 +100,7 @@ public class GameController implements Initializable {
     @FXML
     private void initializeOppsGridPane(GridPane gridPane, Board board) {
         System.out.println("Initializing OppsGridPane");
+        System.out.println("Opp's board : " + board);
         opponentNameLabel.setText(opponentPlayer.getName());
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
@@ -127,7 +125,12 @@ public class GameController implements Initializable {
 
     @FXML
     private void updateMyGridPane() {
+        System.out.println("Updating MyGridPane");
+
         Board board = currentPlayer.getMyBoard();
+
+        System.out.println("Current player = " + currentPlayer);
+        System.out.println("Current player's board = " + board);
 
         myNameLabel.setText(currentPlayer.getName());
 
@@ -151,8 +154,13 @@ public class GameController implements Initializable {
 
     @FXML
     private void updateOppsGridPane() {
-        Board board = opponentPlayer.getMyBoard();
+        System.out.println("Updating OppsGridPane");
 
+        Board board = opponentPlayer.getMyBoard();
+        System.out.println("Opp's board : " + board);
+        System.out.println("Opp's board 2 : " + currentPlayer.getOpponentBoard());
+
+        System.out.println("Opps player = " + opponentPlayer);
         opponentNameLabel.setText(opponentPlayer.getName());
 
         for (int y = 0 ; y < board.getHeight() ; y++) {
@@ -175,6 +183,7 @@ public class GameController implements Initializable {
         if (currentCell != null) {
             if (currentCell.isHit()) {
                 oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #f03d3d !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+                System.out.println("Oooooops");
             } else if (currentCell.hasBeenAttacked()) {
                 oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #f0d23d !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
             } else {
@@ -187,14 +196,15 @@ public class GameController implements Initializable {
         if (currentCell.isHit()) {
             oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #420000 !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
             alert.setContentText("Vous avez déjà touché un bateau ici.");
+            alert.showAndWait();
         } else if (currentCell.hasBeenAttacked()) {
             oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #615900 !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
             alert.setContentText("Vous avez déjà tiré dans l'eau ici.");
+            alert.showAndWait();
         } else {
             oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #2980b9 !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
-            alert.setContentText("Le brouillard vous empêche de voir ici. Voulez vous tirer ici ? Si oui, cliquez sur TIRER.");
+//            alert.setContentText("Le brouillard vous empêche de voir ici. Voulez vous tirer ici ? Si oui, cliquez sur TIRER.");
         }
-        alert.showAndWait();
     }
 
     private void updateCurrentPlayer() {
@@ -213,6 +223,7 @@ public class GameController implements Initializable {
     }
 
     private void onMyGridCellClicked(int x, int y) {
+        updateOppsGridPane();
         currentCell = currentPlayer.getMyBoard().getCell(x, y);
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         updateMyGridPane();
@@ -249,20 +260,30 @@ public class GameController implements Initializable {
 
     @FXML
     private void okButtonClicked() {
-        try {
-            if (GameManager.getInstance().getGame().attack(currentCell.getX(), currentCell.getY()) != null) {
-                updateCurrentPlayer();
-                updateMyGridPane();
-                updateOppsGridPane();
+        if (currentCell.hasBeenAttacked()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Acharnement.");
+            alert.setContentText("Vous vous acharnez sur une case qui a déjà été attaquée. Passez votre chemin.");
+            alert.showAndWait();
+        } else {
+            try {
+                if (GameManager.getInstance().getGame().attack(currentCell.getX(), currentCell.getY()) != null) {
+                    updateCurrentPlayer();
+                    updateMyGridPane();
+                    updateOppsGridPane();
+                }
+            } catch (Exception e) {
+                System.err.println(" ! ! ! Erreur dans nextTurn ! ! ! : " + e.getMessage());
             }
-        } catch (Exception e) {
-            System.err.println(" ! ! ! Erreur dans nextTurn ! ! ! : " + e.getMessage());
         }
+        currentCell = null;
     }
 
     @FXML
     private void cancelButtonClicked() {
-
+        currentCell = null;
+        updateOppsGridPane();
+        updateMyGridPane();
     }
 
     public void setCurrentPlayer(Player player) {

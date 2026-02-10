@@ -21,8 +21,8 @@ public class Game {
         this.turn = 0; // Tour 0
         this.currentPlayer = this.players[0]; // Le joueur 1
 
-        this.currentPlayer.setOpponentBoard(currentPlayer.getMyBoard());
-        this.players[1].setOpponentBoard(this.players[1].getMyBoard());
+        this.currentPlayer.setOpponentBoard(this.players[1].getMyBoard());
+        this.players[1].setOpponentBoard(this.players[0].getMyBoard());
 
 
     }

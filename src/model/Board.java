@@ -63,6 +63,7 @@ public class Board {
     }
 
     public void placeShip(Ship ship, int x, int y, Orientation orientation) {
+        System.out.println("placing ship on board " + this);
         if (canPlaceShip(ship, x, y, orientation)) {
             // Recalculer les positions
             Coordinate[] positions = calculatePositions(ship, x, y, orientation);
@@ -102,7 +103,7 @@ public class Board {
 
     // Méthode qui permet de tirer sur une case
     public AttackResult shootAt(int x, int y) {
-
+        System.out.println("Tir sur le plateau " + this);
         // Vérifier si la case visée est bien une case présente dans le plateau
         if (!isValidCoordinates(x, y)) {
             return null;
