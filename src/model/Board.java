@@ -5,7 +5,6 @@ import type.Coordinate;
 import type.Orientation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Board {
     private int width;
@@ -63,19 +62,20 @@ public class Board {
         return true;
     }
 
-    public boolean placeShip(Ship ship, int x, int y, Orientation orientation) {
+    public void placeShip(Ship ship, int x, int y, Orientation orientation) {
+        System.out.println("placing ship on board " + this);
         if (canPlaceShip(ship, x, y, orientation)) {
             // Recalculer les positions
             Coordinate[] positions = calculatePositions(ship, x, y, orientation);
 
             ship.setPositions(positions, orientation);
             for (Coordinate p : positions) {
+//                System.out.println("Ajout d'un bateau à la coordonnée : (" + p.getX() + "," + p.getY() + ")");
                 cells[p.getX()][p.getY()].setShip(ship);
+//                System.out.println(cells[p.getX()][p.getY()].toString());
             }
             ships.add(ship);
-            return true;
         }
-        return false;
     }
 
     public Coordinate[] calculatePositions(Ship ship, int x, int y, Orientation orientation) {
@@ -86,10 +86,6 @@ public class Board {
             positions[i] = new Coordinate(px, py);
         }
         return positions;
-    }
-
-    public void addShip(Ship ship) {
-        this.ships.add(ship);
     }
 
     public boolean areAllShipsPlaced() {
@@ -107,7 +103,7 @@ public class Board {
 
     // Méthode qui permet de tirer sur une case
     public AttackResult shootAt(int x, int y) {
-
+        System.out.println("Tir sur le plateau " + this);
         // Vérifier si la case visée est bien une case présente dans le plateau
         if (!isValidCoordinates(x, y)) {
             return null;

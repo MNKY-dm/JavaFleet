@@ -12,6 +12,7 @@ import model.Cell;
 import model.Ship;
 import model.entity.Player;
 import type.Coordinate;
+import type.GameState;
 import type.Orientation;
 
 import javafx.scene.control.Button;
@@ -27,11 +28,13 @@ public class ShipPlacementController implements Initializable {
     private Cell currentCell;
     private Orientation currentShipOrientation;
     private ArrayList<Coordinate> previewCoordinates;
-    private ArrayList<Ship> ships;
     private boolean previewIsValid;
 
     @FXML
     private GridPane myBoardGrid;
+
+    @FXML
+    private Label CurrentPlayer;
 
     @FXML
     private Button[][] cellsButtons = new Button[10][10];
@@ -54,7 +57,6 @@ public class ShipPlacementController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 //        System.out.println("Initializing ShipPlacementController");
         currentPlayer = GameManager.getInstance().getGame().getCurrentPlayer();
-        ships = currentPlayer.getShips();
 
         refreshShipsList();
         initializeGridPane(myBoardGrid, currentPlayer.getMyBoard());
@@ -63,6 +65,7 @@ public class ShipPlacementController implements Initializable {
     @FXML
     private void initializeGridPane(GridPane gridPane, Board board) {
 //        System.out.println("Initializing shipPlacementGridPane");
+        CurrentPlayer.setText(GameManager.getInstance().getGame().getCurrentPlayer().getName());
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
                 Cell cell = board.getCell(x, y);
@@ -84,47 +87,28 @@ public class ShipPlacementController implements Initializable {
     // Méthode qui affiche une preview du bateau que l'on veut placer avant de confirmer
     private void setShipPlacementPreview(int x, int y) {
         Board board = currentPlayer.getMyBoard();
-//        System.out.println("Dans setShipPlacementPreview, currentPlayer = " + currentPlayer);
         try {
 
-            if (previewCoordinates != null && !previewCoordinates.isEmpty()) { // Vérifie si des coordonées de preview existent
-//                System.out.println("preview déjà remplie, suppression en cours...");
+            if (previewCoordinates != null && !previewCoordinates.isEmpty()) { // Vérifie si des coordonnées de preview existent
                 for (Coordinate coordinate : previewCoordinates) {
                     if (board.isValidCoordinates(coordinate.getX(),  coordinate.getY())) {
                         if (board.getCell(coordinate.getX(),  coordinate.getY()).isOccupied()) {
-//                            System.out.println("Case occupée, retour marron");
                             cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #615C5C !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
                         } else {
                             cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
                         }
                     }
                 }
-                previewCoordinates.clear(); // Vider la liste une fois que les couleurs ont été réintialisées
-//                System.out.println("preview : suppression effectué");
+                previewCoordinates.clear(); // Vider la liste une fois que les couleurs ont été réinitialisées
 
             }
             boolean isValid = board.canPlaceShip(currentShip, x, y, currentShipOrientation); // Vérifie si on peut placer le bateau sur ces coordonnées
-
-//        System.out.println("Avant calculatePositions:");
-//        System.out.println("  currentShip = " + currentShip);
-//        System.out.println("  currentShip.getLength() = " + (currentShip != null ? currentShip.getLength() : "null"));
-//        System.out.println("  x = " + x + ", y = " + y);
-//        System.out.println("  currentShipOrientation = " + currentShipOrientation);
             Coordinate[] positions = board.calculatePositions(currentShip, x, y, currentShipOrientation);
-
-    //        System.out.println("Après calculatePositions:");
-    //        System.out.println("  positions.length = " + positions.length);
-    //        for (int i = 0; i < positions.length; i++) {
-    //            System.out.println("  positions[" + i + "] = " + positions[i]);
-    //        }
 
             previewCoordinates = new ArrayList<>(Arrays.asList(positions));
 
-//            System.out.println("preview inexistante, création en cours...");
-
             boolean previewPlacable = true;
             for (Coordinate coordinate : previewCoordinates) {
-    //            System.out.println("coordonnée : " + coordinate.toString());
                 if (board.isValidCoordinates(coordinate.getX(), coordinate.getY())) { // Vérifier uniquement si les coordonnées sont dans la grille
                     if (isValid) { // Si le placement est possible
                         cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #016908 !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Change la couleur de la case en vert
@@ -143,8 +127,10 @@ public class ShipPlacementController implements Initializable {
 
     public void refreshShipsList() {
 //        System.out.println(" Nettoyage de la liste de bateaux. ");
+//        System.out.println("refreshShipsList() pour : " + currentPlayer.getName());
+//        System.out.println("VBox children avant clear : " + shipsVbox.getChildren().size());
         shipsVbox.getChildren().clear(); // Bien vider la liste des bateaux lorsque la liste doit être initialisée
-        for (Ship ship : ships) {
+        for (Ship ship : currentPlayer.getShips()) {
 //            System.out.println("Boucle sur la liste des bateaux");
 //            System.out.println("Bateau : " + ship.getShipType());
 //            System.out.println("Positions : " + Arrays.toString(ship.getPositions()));
@@ -168,15 +154,15 @@ public class ShipPlacementController implements Initializable {
         Board board = currentPlayer.getMyBoard();
 
         // Commencer par supprimer le preview courant
-        if (previewCoordinates != null && !previewCoordinates.isEmpty()) { // Vérifie si des coordonées de preview existent
-
-            for (Coordinate coordinate : previewCoordinates) {
-                if (board.isValidCoordinates(coordinate.getX(),  coordinate.getY())) {
-                    cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
-                }
-            }
-            previewCoordinates.clear(); // Vider la liste une fois que les couleurs ont été réintialisées
-        }
+//        if (previewCoordinates != null && !previewCoordinates.isEmpty()) { // Vérifie si des coordonées de preview existent
+//
+//            for (Coordinate coordinate : previewCoordinates) {
+//                if (board.isValidCoordinates(coordinate.getX(),  coordinate.getY())) {
+//                    cellsButtons[coordinate.getX()][coordinate.getY()].setStyle("-fx-background-color: #87CEEB !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
+//                }
+//            }
+//            previewCoordinates.clear(); // Vider la liste une fois que les couleurs ont été réintialisées
+//        }
 
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
@@ -221,13 +207,13 @@ public class ShipPlacementController implements Initializable {
     @FXML
     private void okButtonClicked() {
         Ship ship = currentShip;
-        System.out.println("Bouton OK cliqué");
+//        System.out.println("Bouton OK cliqué");
         if (previewIsValid) {
-            System.out.println("Bateau placé : " + ship.getShipType());
+//            System.out.println("Bateau placé : " + ship.getShipType());
             currentPlayer.getMyBoard().placeShip(ship, currentCell.getX(), currentCell.getY(), currentShipOrientation); // Placer le bateau
-            refreshShipsList(); // Rafraichir la liste des bateaux non placés
             currentShip = null; // Déselectionner le bateau
             updateGridPane();
+            refreshShipsList(); // Rafraichir la liste des bateaux non placés
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Position invalide");
@@ -261,7 +247,21 @@ public class ShipPlacementController implements Initializable {
             if (answer.isPresent()) {
                 if (answer.get() == ButtonType.OK) {
                     System.out.println("Prochain setup turn.");
-                    GameManager.getInstance().getGame().nextSetupTurn();
+                    try {
+                        if (GameManager.getInstance().getGame().nextSetupTurn()) {
+                            GameManager.getInstance().loadScene(GameManager.getInstance().getGame().getGameState());
+                        }
+                        currentPlayer = controller.GameManager.getInstance().getGame().getCurrentPlayer();
+                        refreshShipsList();
+                        previewCoordinates.clear();
+                        myBoardGrid.getChildren().clear();          // vider la grille
+                        // éventuellement réinitialiser cellsButtons
+                        // cellsButtons = new Button[10][10];
+                        initializeGridPane(myBoardGrid, currentPlayer.getMyBoard());
+
+                    } catch (Exception e) {
+                        System.err.println(e.getMessage());
+                    }
                 } else {
                     System.out.println("Prochain setup turn annulé.");
                 }
@@ -283,9 +283,6 @@ public class ShipPlacementController implements Initializable {
         return currentShipOrientation;
     }
 
-    public ArrayList<Ship> getShips() {
-        return ships;
-    }
 
     // Setters
 
@@ -299,9 +296,5 @@ public class ShipPlacementController implements Initializable {
 
     public void setCurrentShipOrientation(Orientation currentShipOrientation) {
         this.currentShipOrientation = currentShipOrientation;
-    }
-
-    public void setShips(ArrayList<Ship> ships) {
-        this.ships = ships;
     }
 }

@@ -1,5 +1,6 @@
 package model;
 
+import javafx.scene.control.Alert;
 import model.entity.Player;
 import type.AttackResult;
 import type.Coordinate;
@@ -11,24 +12,25 @@ public class Game {
     private GameState gameState;
     private int turn;
 
-    public  Game(String player1Name, String player2Name) {
+    public Game(String player1Name, String player2Name) {
         this.players = new Player[2];
         this.players[0] = new Player(player1Name);
         this.players[1] = new Player(player2Name);
 
-        // Initialiser la dualité des plateaux
-        this.players[0].setOpponentBoard(this.players[1].getMyBoard());
+        this.gameState = GameState.SETUP; // Le jeu est en phase de construction
+        this.turn = 0; // Tour 0
+        this.currentPlayer = this.players[0]; // Le joueur 1
+
+        this.currentPlayer.setOpponentBoard(this.players[1].getMyBoard());
         this.players[1].setOpponentBoard(this.players[0].getMyBoard());
 
 
-        this.gameState = GameState.SETUP; // Le jeu est en phase de construction
-        this.turn = 0; // Tour 0
-        this.currentPlayer = this.players[0]; // Le joueur 1 player1Name
     }
 
     public void startGame() throws IllegalStateException {
         if (areAllShipsReady()) {
             this.gameState = GameState.PLAYING;
+            this.currentPlayer = this.players[0]; // Le joueur 1 commence la partie
             System.out.println("=== La partie commence ! ===");
         }
         else {
@@ -41,11 +43,14 @@ public class Game {
             return null;
         }
         AttackResult attackResult = currentPlayer.attackOpponent(x, y);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("ATTAQUE");
         if (attackResult == null) {
-            System.out.println("Attaque invalide ! ");
+            alert.setContentText("Attaque invalide ! ");
             return null;
         }
-        System.out.println("Tour d'" + currentPlayer.getName() + " Tir sur la case " + new Coordinate(x, y) + " ; Résultat : " + attackResult);
+        alert.setContentText("Tour de " + currentPlayer.getName() + " ; \nTir sur la case  : " + new Coordinate(x, y) + " ;\nRésultat : " + attackResult);
+        alert.showAndWait();
         if (checkGameOver()) {
             this.gameState = GameState.FINISHED;
         }
@@ -63,6 +68,24 @@ public class Game {
             throw new Exception("Impossible de passer au tour suivant");
         }
         System.out.println("Tour n°" + this.turn + " ! C'est au tour de " + this.currentPlayer.getName() + ". ");
+    }
+
+    public boolean nextSetupTurn() throws Exception {
+        if (this.currentPlayer == this.players[0]) {
+            this.currentPlayer = this.players[1];
+            System.out.println("C'est au tour du Joueur 2 de placer ses bateaux.");
+        } else if (this.currentPlayer == this.players[1]) {
+            try {
+                System.out.println("Vérifier si tous les bateaux sont placés, si oui, démarrage de la partie");
+                this.startGame();
+                return true;
+            } catch (IllegalStateException e) {
+                System.out.println("Impossible de passe au tour suivant");
+            }
+        } else {
+            throw new Exception("Impossible de passer au tour suivant");
+        }
+        return false;
     }
 
     public boolean checkGameOver() {
