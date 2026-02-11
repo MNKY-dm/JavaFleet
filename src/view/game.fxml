@@ -78,11 +78,26 @@
                <children>
                   <Button fx:id="okButton" mnemonicParsing="false" onAction="#okButtonClicked" text="TIRER" textAlignment="CENTER" />
                   <Button fx:id="cancelButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#cancelButtonClicked" text="CANCEL" textAlignment="CENTER" />
-                  <Label fx:id="myHealthLabel" text="VIE RESTANTE : " />
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="VIE RESTANTE : " />
+                        <Label fx:id="myHealthLabel" layoutX="10.0" layoutY="10.0" />
+                     </children>
+                  </HBox>
                   <VBox>
                      <children>
-                        <Label fx:id="myNbShipsLabel" text="NOMBRE DE BATEAUX ALLIES RESTANTS : " />
-                        <Label fx:id="oppsNbShipsLabel" text="NOMBRE DE BATEAUX ENNEMIS RESTANTS : " />
+                        <HBox prefHeight="100.0">
+                           <children>
+                              <Label text="NOMBRE DE BATEAUX ALLIES RESTANTS : " />
+                              <Label fx:id="myNbShipsLabel" layoutX="10.0" layoutY="10.0" />
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="100.0">
+                           <children>
+                              <Label text="NOMBRE DE BATEAUX ENNEMIS RESTANTS : " />
+                              <Label fx:id="oppsNbShipsLabel" layoutX="10.0" layoutY="10.0" />
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </children>

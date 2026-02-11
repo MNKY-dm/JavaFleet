@@ -14,6 +14,7 @@ public class GameManager {
     private static GameManager gameManager;
     private Game game;
     private Stage primaryStage;
+    private int windowHeight;
     private Scene currentScene;
     private GameState gameState;
 
@@ -22,6 +23,7 @@ public class GameManager {
         this.primaryStage = primaryStage;
         Game game = new Game("PLAYER1", "PLAYER2");
         setGame(game);
+        this.windowHeight = 900;
 
         try {
             loadScene(GameState.SETUP);
@@ -53,7 +55,6 @@ public class GameManager {
             System.out.println(game.getCurrentPlayer().toString());
         } else if (controllerObj instanceof GameController controller) {
             controller.setCurrentPlayer(game.getPlayers()[0]);
-//            controller.setOpponentBoard(game.getPlayers()[1]);
             System.out.println("1 current player  : " + game.getCurrentPlayer());
             System.out.println("2 opps player  : " + game.getPlayers()[1]);
         }
@@ -63,7 +64,7 @@ public class GameManager {
         primaryStage.setWidth(1000);
         primaryStage.setHeight(900);
         primaryStage.setMinWidth(600);
-        primaryStage.setMinHeight(900);
+        primaryStage.setMinHeight(windowHeight);
 
         primaryStage.setTitle(title);
         primaryStage.setScene(scene);
@@ -83,5 +84,9 @@ public class GameManager {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public void setWindowHeight(int windowHeight) {
+        this.windowHeight = windowHeight;
     }
 }

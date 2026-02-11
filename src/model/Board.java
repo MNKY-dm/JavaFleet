@@ -128,6 +128,16 @@ public class Board {
         return true;
     }
 
+    public String getAliveShips() {
+        int aliveShips = 0;
+        for (Ship ship : ships) {
+            if (!ship.isSunk()) {
+                aliveShips++;
+            }
+        }
+        return aliveShips + "";
+    }
+
     // Getters
 
     public int getHeight() {

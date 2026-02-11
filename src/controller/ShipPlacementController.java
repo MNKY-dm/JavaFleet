@@ -249,6 +249,7 @@ public class ShipPlacementController implements Initializable {
                     System.out.println("Prochain setup turn.");
                     try {
                         if (GameManager.getInstance().getGame().nextSetupTurn()) {
+                            GameManager.getInstance().setWindowHeight(940);
                             GameManager.getInstance().loadScene(GameManager.getInstance().getGame().getGameState());
                         }
                         currentPlayer = controller.GameManager.getInstance().getGame().getCurrentPlayer();

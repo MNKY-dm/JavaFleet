@@ -74,6 +74,9 @@ public class GameController implements Initializable {
         System.out.println("Initializing MyGridPane");
         System.out.println("My Board: " + board);
         myNameLabel.setText(currentPlayer.getName());
+        myHealthLabel.setText(currentPlayer.getFleetHealth());
+        myNbShipsLabel.setText(currentPlayer.getMyBoard().getAliveShips());
+        oppsNbShipsLabel.setText(opponentPlayer.getMyBoard().getAliveShips());
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
                 Cell cell = board.getCell(x, y);
@@ -87,7 +90,6 @@ public class GameController implements Initializable {
                 }
 
                 cellButton.setOnAction(event -> {
-//                    System.out.println("Cellule cliquée : (" + cell.getX() + ", " + cell.getY() + ")");
                     onMyGridCellClicked(cell.getX(), cell.getY());
                 });
                 cellsButtons[x][y] = cellButton;
@@ -113,7 +115,6 @@ public class GameController implements Initializable {
 
 
                 cellButton.setOnAction(event -> {
-//                    System.out.println("Cellule cliquée : (" + cell.getX() + ", " + cell.getY() + ")");
                     onOppsGridCellClicked(cell.getX(), cell.getY());
                 });
                 oppsCellsButtons[x][y] = cellButton;
@@ -133,6 +134,9 @@ public class GameController implements Initializable {
         System.out.println("Current player's board = " + board);
 
         myNameLabel.setText(currentPlayer.getName());
+        myHealthLabel.setText(currentPlayer.getFleetHealth());
+        myNbShipsLabel.setText(currentPlayer.getMyBoard().getAliveShips());
+        oppsNbShipsLabel.setText(opponentPlayer.getMyBoard().getAliveShips());
 
         for (int y = 0 ; y < board.getHeight() ; y++) {
             for (int x = 0 ; x < board.getWidth() ; x++) {
@@ -203,7 +207,6 @@ public class GameController implements Initializable {
             alert.showAndWait();
         } else {
             oppsCellsButtons[currentCell.getX()][currentCell.getY()].setStyle("-fx-background-color: #2980b9 !important; -fx-border-color: #000; -fx-border-width: 0.5;"); // Remettre la couleur de base pour chaque case de la preview déjà active
-//            alert.setContentText("Le brouillard vous empêche de voir ici. Voulez vous tirer ici ? Si oui, cliquez sur TIRER.");
         }
     }
 
@@ -231,7 +234,6 @@ public class GameController implements Initializable {
         System.out.println("isOccupied = " + currentCell.isOccupied());
         System.out.println("Style du bouton = " + cellsButtons[x][y].getStyle());
         System.out.println("Joueur courant = " + currentPlayer.getName());
-//        System.out.println(currentCell.toString());
         if (currentCell.isOccupied()) {
             System.out.println("Type de bateau : " + currentCell.getShip().getShipType());
             alert.setTitle("Type de bateau");
