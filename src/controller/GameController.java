@@ -5,7 +5,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 import model.Board;
 import model.Cell;
 import model.Game;
@@ -20,6 +23,9 @@ public class GameController implements Initializable {
     private Player opponentPlayer;
     private Cell currentCell;
     private boolean targetIsValid;
+
+    @FXML
+    public StackPane root;
 
     @FXML
     private Label myNameLabel;
@@ -54,6 +60,15 @@ public class GameController implements Initializable {
     @FXML
     private Label oppsNbShipsLabel;
 
+    @FXML
+    private AnchorPane transitionOverlay;
+
+    @FXML
+    private Button continueButton;
+
+    @FXML
+    private Rectangle overlayBackground;
+
     public void initialize(URL location, ResourceBundle resources){
         System.out.println("Initializing GameController");
 
@@ -68,6 +83,16 @@ public class GameController implements Initializable {
 
         initializeMyGridPane(myBoard, currentPlayer.getMyBoard());
         initializeOppsGridPane(opponentBoard, opponentPlayer.getMyBoard());
+
+        overlayBackground.widthProperty().bind(root.widthProperty());
+        overlayBackground.heightProperty().bind(root.heightProperty());
+
+        continueButton.setOnAction(e -> {
+            hideTransitionScreen();
+        });
+
+
+
     }
 
     @FXML
@@ -279,12 +304,25 @@ public class GameController implements Initializable {
                         updateMyGridPane();
                         updateOppsGridPane();
                     }
+                    showTransitionScreen(currentPlayer.getName());
                 }
             } catch (Exception e) {
                 System.err.println(" ! ! ! Erreur dans nextTurn ! ! ! : " + e.getMessage());
             }
         }
         currentCell = null;
+    }
+
+    private void showTransitionScreen(String nextPlayerName) {
+        // mettre à jour le texte si besoin
+        // par ex. un label dans l’overlay : "Tour de PLAYER2"
+        transitionOverlay.setVisible(true);
+        transitionOverlay.setMouseTransparent(false); // bloque les clics sur le reste
+    }
+
+    private void hideTransitionScreen() {
+        transitionOverlay.setVisible(false);
+        transitionOverlay.setMouseTransparent(true);  // re-débloque les clics
     }
 
     @FXML

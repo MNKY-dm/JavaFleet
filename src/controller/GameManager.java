@@ -87,6 +87,7 @@ public class GameManager {
             primaryStage.show();
         } catch (Exception e) {
             System.err.println("Erreur dans loadScene : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

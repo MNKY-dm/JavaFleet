@@ -83,9 +83,6 @@
             </VBox>
             <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#confirmButtonClicked" text="CONFIRMER" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" />
          </children>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
       </AnchorPane>
    </right>
 </BorderPane>
