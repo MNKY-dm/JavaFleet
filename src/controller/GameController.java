@@ -10,6 +10,7 @@ import model.Board;
 import model.Cell;
 import model.Game;
 import model.entity.Player;
+import type.GameState;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -270,9 +271,14 @@ public class GameController implements Initializable {
         } else {
             try {
                 if (GameManager.getInstance().getGame().attack(currentCell.getX(), currentCell.getY()) != null) {
-                    updateCurrentPlayer();
-                    updateMyGridPane();
-                    updateOppsGridPane();
+                    if (GameManager.getInstance().getGame().getGameState() == GameState.FINISHED) {
+                        GameManager.getInstance().setWindowHeight(600);
+                        GameManager.getInstance().loadScene(GameState.FINISHED);
+                    } else {
+                        updateCurrentPlayer();
+                        updateMyGridPane();
+                        updateOppsGridPane();
+                    }
                 }
             } catch (Exception e) {
                 System.err.println(" ! ! ! Erreur dans nextTurn ! ! ! : " + e.getMessage());

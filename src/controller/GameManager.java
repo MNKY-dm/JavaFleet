@@ -33,42 +33,61 @@ public class GameManager {
         }
     }
 
+    public void startAnotherGame() {
+        Game game = new Game("PLAYER1", "PLAYER2");
+        setGame(game);
+        this.windowHeight = 900;
+
+        try {
+            loadScene(GameState.SETUP);
+        } catch (IOException e) {
+            System.err.println("Erreur dans loadScene : ");
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     public void loadScene(GameState gameState) throws IOException {
-        String title;
+        try {
+            String title;
 
-        FXMLLoader loader;
-        if (gameState == GameState.SETUP) {
-            loader = new FXMLLoader(getClass().getResource("/view/shipPlacement.fxml"));
-            title = "JavaFleet - Disposition de la flotte";
-        } else if (gameState == GameState.PLAYING) {
-            loader = new FXMLLoader(getClass().getResource("/view/game.fxml"));
-            title = "JavaFleet - Partie";
-        } else {
-            loader = new FXMLLoader(getClass().getResource("/view/gameOver.fxml"));
-            title = "JavaFleet - Game Over";
+            FXMLLoader loader;
+            if (gameState == GameState.SETUP) {
+                loader = new FXMLLoader(getClass().getResource("/view/shipPlacement.fxml"));
+                title = "JavaFleet - Disposition de la flotte";
+            } else if (gameState == GameState.PLAYING) {
+                loader = new FXMLLoader(getClass().getResource("/view/game.fxml"));
+                title = "JavaFleet - Partie";
+            } else {
+                loader = new FXMLLoader(getClass().getResource("/view/gameOver.fxml"));
+                title = "JavaFleet - Game Over";
+            }
+                Parent root = loader.load();
+            Object controllerObj = loader.getController();
+            if (controllerObj instanceof ShipPlacementController controller) {
+                controller.setCurrentPlayer(game.getCurrentPlayer());
+                System.out.println(game.getCurrentPlayer().toString());
+            } else if (controllerObj instanceof GameController controller) {
+                controller.setCurrentPlayer(game.getPlayers()[0]);
+                System.out.println("1 current player  : " + game.getCurrentPlayer());
+                System.out.println("2 opps player  : " + game.getPlayers()[1]);
+            } else if (controllerObj instanceof GameOverController controller) {
+                controller.setWinner(game.getWinner());
+            }
+
+            Scene scene = new Scene(root);
+
+            primaryStage.setWidth(1000);
+            primaryStage.setHeight(900);
+            primaryStage.setMinWidth(600);
+            primaryStage.setMinHeight(windowHeight);
+
+            primaryStage.setTitle(title);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (Exception e) {
+            System.err.println("Erreur dans loadScene : " + e.getMessage());
         }
-        Parent root = loader.load();
-        Object controllerObj = loader.getController();
-        if (controllerObj instanceof ShipPlacementController controller) {
-            controller.setCurrentPlayer(game.getCurrentPlayer());
-            System.out.println(game.getCurrentPlayer().toString());
-        } else if (controllerObj instanceof GameController controller) {
-            controller.setCurrentPlayer(game.getPlayers()[0]);
-            System.out.println("1 current player  : " + game.getCurrentPlayer());
-            System.out.println("2 opps player  : " + game.getPlayers()[1]);
-        }
-
-        Scene scene = new Scene(root);
-
-        primaryStage.setWidth(1000);
-        primaryStage.setHeight(900);
-        primaryStage.setMinWidth(600);
-        primaryStage.setMinHeight(windowHeight);
-
-        primaryStage.setTitle(title);
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
     public static GameManager getInstance() {

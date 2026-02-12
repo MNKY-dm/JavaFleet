@@ -11,6 +11,7 @@ public class Game {
     private Player currentPlayer;
     private GameState gameState;
     private int turn;
+    private Player winner;
 
     public Game(String player1Name, String player2Name) {
         this.players = new Player[2];
@@ -23,6 +24,9 @@ public class Game {
 
         this.currentPlayer.setOpponentBoard(this.players[1].getMyBoard());
         this.players[1].setOpponentBoard(this.players[0].getMyBoard());
+
+        this.currentPlayer.setOpponent(this.players[1]);
+        this.players[1].setOpponent(this.players[0]);
 
 
     }
@@ -43,18 +47,20 @@ public class Game {
             return null;
         }
         AttackResult attackResult = currentPlayer.attackOpponent(x, y);
+        winner = checkGameOver();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("ATTAQUE");
-        if (attackResult == null) {
-            alert.setContentText("Attaque invalide ! ");
-            return null;
-        }
         alert.setContentText("Tour de " + currentPlayer.getName() + " ; \nTir sur la case  : " + new Coordinate(x, y) + " ;\nRésultat : " + attackResult);
         alert.showAndWait();
-        if (checkGameOver()) {
+        if (winner != null) {
             this.gameState = GameState.FINISHED;
+        } else {
+            if (attackResult == null) {
+                alert.setContentText("Attaque invalide ! ");
+                return null;
+            }
+            nextTurn();
         }
-        nextTurn();
         return attackResult;
     }
 
@@ -88,13 +94,13 @@ public class Game {
         return false;
     }
 
-    public boolean checkGameOver() {
+    public Player checkGameOver() {
         for (Player player : this.players) {
             if (player.hasLost()) {
-                return true;
+                return player.getOpponent();
             }
         }
-        return false;
+        return null;
     }
 
     private boolean areAllShipsReady() {
@@ -122,6 +128,10 @@ public class Game {
 
     public int getTurn() {
         return turn;
+    }
+
+    public String getWinner() {
+        return winner.getName();
     }
 
     // Setters

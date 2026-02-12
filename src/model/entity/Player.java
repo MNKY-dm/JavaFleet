@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class Player {
     private String name;
+    private Player opponent;
     private Board myBoard;
     private Board opponentBoard;
     private ArrayList<Ship> ships;
@@ -69,6 +70,10 @@ public class Player {
         return myBoard;
     }
 
+    public Player getOpponent() {
+        return this.opponent;
+    }
+
     public Board getOpponentBoard() {
         return opponentBoard;
     }
@@ -90,6 +95,11 @@ public class Player {
     public void setOpponentBoard(Board opponentBoard) {
         // Récupérer le bateau adverse
         this.opponentBoard = opponentBoard;
+    }
+
+    public void setOpponent(Player opponent) {
+        // Récupérer l'adversaire
+        this.opponent = opponent;
     }
 
     public void setShips(ArrayList<Ship> ships) {
