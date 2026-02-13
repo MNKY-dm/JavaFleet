@@ -1,5 +1,6 @@
 package model.entity;
 
+import controller.GameManager;
 import model.Ship;
 
 // Plaçable par le joueur, mais n'ajoute pas de points de vie à sa flotte
@@ -11,7 +12,7 @@ public class NavalMine extends Ship {
     }
 
     public void explodePlayer() {
-
+        GameManager.getInstance().getGame().getCurrentPlayer().explodePlayer();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package model;
 
+import model.entity.NavalMine;
 import type.AttackResult;
 import type.Coordinate;
 import type.Orientation;
@@ -11,6 +12,7 @@ public class Board {
     private int height;
     private Cell[][] cells;
     public ArrayList<Ship> ships;
+    public boolean areAllShipsDead;
 
     public Board() { // initialiser un plateau vide en fonction de sa hauteur et de sa largeur
         this.width = 10;
@@ -23,6 +25,7 @@ public class Board {
             }
         }
         ships = new ArrayList<>();
+        areAllShipsDead = false;
     }
 
     public boolean isValidCoordinates(int x, int y) {
@@ -119,13 +122,15 @@ public class Board {
     }
 
     // Méthode qui permet de vérifier si tous les bateaux sont coulés
-    public boolean areAllShipsSunk() {
-        for (Ship ship : ships) {
-            if (!ship.isSunk()) {
-                return false;
+    public void areAllShipsSunk() {
+        if (!this.areAllShipsDead) {
+            for (Ship ship : ships) {
+                if (ship instanceof NavalMine) {
+                    continue;
+                }
+                areAllShipsDead = ship.isSunk();
             }
         }
-        return true;
     }
 
     public String getAliveShips() {
@@ -136,6 +141,10 @@ public class Board {
             }
         }
         return aliveShips + "";
+    }
+
+    public void explode() {
+        this.areAllShipsDead = true;
     }
 
     // Getters
@@ -154,6 +163,10 @@ public class Board {
 
     public ArrayList<Ship> getShips() {
         return this.ships;
+    }
+
+    public boolean getAreAllShipsDead() {
+        return this.areAllShipsDead;
     }
 
     // Setters

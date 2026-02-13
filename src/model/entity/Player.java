@@ -47,7 +47,7 @@ public class Player {
     public String getFleetHealth() {
         int totalHealth = 0;
         for (Ship ship : this.getShips()) {
-            if (ship.getShipType().equals("NavalMine")) {
+            if (ship instanceof NavalMine) {
                 continue;
             }
             totalHealth += ship.getHealth();
@@ -56,7 +56,13 @@ public class Player {
     }
 
     public boolean hasLost() {
-        return this.myBoard.areAllShipsSunk();
+        this.myBoard.areAllShipsSunk();
+        System.out.println(name + "areAllShipsSunk = " + myBoard.getAreAllShipsDead());
+        return this.myBoard.getAreAllShipsDead();
+    }
+
+    public void explodePlayer() {
+        this.myBoard.explode();
     }
 
 

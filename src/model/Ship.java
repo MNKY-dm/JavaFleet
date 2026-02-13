@@ -32,6 +32,7 @@ public abstract class Ship {
     // Getters
 
     public int getHealth() {
+
         return this.health;
     }
 

@@ -1,5 +1,6 @@
 package model;
 
+import model.entity.NavalMine;
 import type.AttackResult;
 
 public class Cell {
@@ -34,6 +35,9 @@ public class Cell {
 
             if (this.ship.isSunk()) {
                 this.ship.onSunk(); // Déclencher onSunk() --> Si c'est une NavalMine, fait couler l'attaquant
+                if (this.ship instanceof NavalMine) {
+                    return AttackResult.EXPLODE;
+                }
                 return AttackResult.SUNK; // Le bâteau coule
             }
             return AttackResult.HIT;
